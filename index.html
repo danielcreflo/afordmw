@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AFORD — Alliance for Democracy</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Barlow + DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'aford': {
+              'royal':   '#1A4FBB',
+              'navy':    '#0C2D6B',
+              'sky':     '#2E6FD8',
+              'ice':     '#DDEAF8',
+              'gold':    '#D4A017',
+              'gold-dk': '#412402',
+              'charcoal':'#1E1E2C',
+              'slate':   '#4A4A5A',
+              'offwhite':'#F4F6FA',
+            }
+          },
+          fontFamily: {
+            heading: ['Barlow', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Barlow', sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Navbar scroll effect ── */
+    #navbar { transition: background 0.3s ease, box-shadow 0.3s ease; }
+    #navbar.scrolled {
+      background: rgba(12, 45, 107, 0.97);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 24px rgba(12,45,107,0.18);
+    }
+
+    /* ── Mobile menu slide ── */
+    #mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+    #mobile-menu.open { max-height: 540px; }
+
+    /* ── Nav link underline ── */
+    .nav-link { position: relative; padding-bottom: 2px; }
+    .nav-link::after {
+      content: ''; position: absolute; left: 0; bottom: -2px;
+      width: 0; height: 2px; background: #D4A017; transition: width 0.25s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── 4 F's ticker ── */
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: ticker 22s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+
+    /* ── Hero slideshow ── */
+    .hero-slide {
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-slide.active { opacity: 1; }
+
+    /* Ken Burns on each slide */
+    .hero-slide.active .hero-bg {
+      animation: kenburns 10s ease-out forwards;
+    }
+    @keyframes kenburns {
+      0%   { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      will-change: transform;
+    }
+
+    /* Hero text fade-up */
+    .hero-slide.active .hero-content > * {
+      animation: fadeUp 0.9s ease forwards;
+    }
+    .hero-slide.active .hero-content > *:nth-child(1) { animation-delay: 0.3s; }
+    .hero-slide.active .hero-content > *:nth-child(2) { animation-delay: 0.5s; }
+    .hero-slide.active .hero-content > *:nth-child(3) { animation-delay: 0.7s; }
+    .hero-slide.active .hero-content > *:nth-child(4) { animation-delay: 0.9s; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-content > * { opacity: 0; }
+
+    /* Dot indicators */
+    .hero-dot {
+      width: 8px; height: 8px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,0.4);
+      transition: background 0.3s ease, width 0.3s ease;
+      cursor: pointer;
+    }
+    .hero-dot.active {
+      background: #D4A017;
+      width: 28px;
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── 4 F's card hover lift ── */
+    .f-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .f-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(12,45,107,0.18);
+    }
+
+    /* ── 4 F's image zoom ── */
+    .f-img-wrap { position: relative; overflow: hidden; }
+    .f-img-wrap img {
+      transition: transform 0.5s ease;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .f-card:hover .f-img-wrap img { transform: scale(1.06); }
+    .f-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(12,45,107,0.85) 0%, rgba(12,45,107,0.3) 55%, transparent 100%);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .ticker-track { animation: none; }
+      #navbar { transition: none; }
+      .hero-slide { transition: none; }
+      .hero-bg { animation: none !important; }
+      .hero-content > * { animation: none !important; opacity: 1 !important; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .f-card { transition: none; }
+      .f-img-wrap img { transition: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-white text-aford-charcoal">
+
+  <!-- ════════════════════════════════════════════
+       4 F's ANNOUNCEMENT BAR
+  ════════════════════════════════════════════ -->
+  <div class="bg-aford-royal overflow-hidden" id="announcement-bar">
+    <div class="ticker-track py-2 select-none" aria-label="AFORD's four pillars: Forex, Fertiliser, Fuel, Food">
+      <div class="flex items-center gap-0">
+        <span class="font-heading text-xs tracking-widest text-blue-300 uppercase px-6 whitespace-nowrap" style="font-weight:700;">Our 4 F's</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Forex</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fertiliser</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fuel</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Food</span>
+        <span class="font-body text-xs text-blue-300 italic px-6 whitespace-nowrap">— The backbone of every Malawian life</span>
+
+        <span class="font-heading text-xs tracking-widest text-blue-300 uppercase px-6 whitespace-nowrap" style="font-weight:700;">Our 4 F's</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Forex</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fertiliser</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fuel</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Food</span>
+        <span class="font-body text-xs text-blue-300 italic px-6 whitespace-nowrap">— The backbone of every Malawian life</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════
+       NAVBAR
+  ════════════════════════════════════════════ -->
+  <nav id="navbar" class="sticky top-0 z-50 bg-aford-navy" role="navigation" aria-label="Main navigation">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+
+        <!-- LOGO -->
+        <a href="index.html" class="flex items-center gap-4 group" aria-label="AFORD home">
+          <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-aford-gold flex-shrink-0 group-hover:border-white transition-colors duration-200">
+            <img src="aford_logo.png" alt="AFORD logo" class="w-full h-full object-cover" />
+          </div>
+          <div class="leading-tight">
+            <p class="font-heading text-white text-xl tracking-wide leading-none" style="font-weight:800;">AFORD</p>
+            <p class="font-body text-blue-300 text-sm leading-none mt-1">Alliance for Democracy</p>
+          </div>
+        </a>
+
+        <!-- DESKTOP NAV LINKS -->
+        <div class="hidden xl:flex items-center gap-1">
+
+          <!-- About dropdown -->
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;" aria-haspopup="true">
+              About
+              <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5">
+                <p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">The Party</p>
+              </div>
+              <a href="about.html"        class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>About AFORD</a>
+              <a href="history.html"      class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party History</a>
+              <a href="leadership.html"   class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Leadership & Structure</a>
+              <a href="constitution.html" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party Constitution</a>
+            </div>
+          </div>
+
+          <!-- Policies mega-dropdown -->
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;" aria-haspopup="true">
+              Policies
+              <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-[480px] bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 p-4">
+              <p class="font-heading text-xs tracking-widest text-aford-royal uppercase mb-2 px-1" style="font-weight:700;">The 4 F's — Our Core Agenda</p>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <a href="policy-forex.html"      class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150 group/item">
+                  <div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div>
+                  <div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Forex</p><p class="font-body text-xs text-aford-slate leading-snug">Foreign exchange stability policy</p></div>
+                </a>
+                <a href="policy-fertiliser.html" class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150 group/item">
+                  <div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div>
+                  <div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Fertiliser</p><p class="font-body text-xs text-aford-slate leading-snug">Agricultural input support policy</p></div>
+                </a>
+                <a href="policy-fuel.html"       class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150 group/item">
+                  <div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div>
+                  <div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Fuel</p><p class="font-body text-xs text-aford-slate leading-snug">Energy security & supply policy</p></div>
+                </a>
+                <a href="policy-food.html"       class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150 group/item">
+                  <div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div>
+                  <div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Food</p><p class="font-body text-xs text-aford-slate leading-snug">National food security policy</p></div>
+                </a>
+              </div>
+              <div class="border-t border-gray-100 pt-3 flex items-center justify-between">
+                <p class="font-body text-xs text-aford-slate">See the full picture</p>
+                <a href="manifesto.html" class="font-heading text-xs text-white bg-aford-royal rounded-lg px-3 py-1.5 hover:bg-aford-sky transition-colors duration-150" style="font-weight:700;">Read Full Manifesto →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- News dropdown -->
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;" aria-haspopup="true">
+              News
+              <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5"><p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">Stay Informed</p></div>
+              <a href="news.html"           class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Latest News</a>
+              <a href="press-releases.html" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Press Releases</a>
+              <a href="statements.html"     class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party Statements</a>
+              <a href="events.html"         class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Upcoming Events</a>
+            </div>
+          </div>
+
+          <!-- Media dropdown -->
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;" aria-haspopup="true">
+              Media
+              <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5"><p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">Media Centre</p></div>
+              <a href="gallery.html"      class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Photo Gallery</a>
+              <a href="videos.html"       class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Videos</a>
+              <a href="media-center.html" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Press Resources</a>
+            </div>
+          </div>
+
+          <!-- Membership — gold highlighted direct link -->
+          <a href="membership.html" class="font-heading text-sm text-aford-gold hover:text-white transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10 border border-aford-gold/40 hover:border-white/30" style="font-weight:700;">Membership</a>
+
+          <!-- Contact — direct link -->
+          <a href="contact.html" class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;">Contact</a>
+        </div>
+
+        <!-- DESKTOP CTA -->
+        <div class="hidden xl:flex items-center">
+          <a href="membership.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-5 py-2.5 hover:brightness-110 transition-all duration-200 whitespace-nowrap" style="font-weight:700;">Join AFORD</a>
+        </div>
+
+        <!-- MOBILE HAMBURGER -->
+        <button id="hamburger" class="xl:hidden flex flex-col justify-center items-center w-12 h-12 gap-1.5 rounded-lg hover:bg-white/10 transition-colors duration-200" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span id="bar1" class="block w-5 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+          <span id="bar2" class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
+          <span id="bar3" class="block w-5 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" role="region" aria-label="Mobile navigation">
+      <div class="bg-aford-navy border-t border-white/10 px-4 pb-6 pt-2 max-w-7xl mx-auto">
+        <div class="flex flex-col gap-1 mb-4">
+
+          <div>
+            <button id="mob-about-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              About <svg id="mob-about-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-about" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="about.html"        class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">About AFORD</a>
+              <a href="history.html"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party History</a>
+              <a href="leadership.html"   class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Leadership & Structure</a>
+              <a href="constitution.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party Constitution</a>
+            </div>
+          </div>
+
+          <div>
+            <button id="mob-policies-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              Policies <svg id="mob-policies-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-policies" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <p class="font-heading text-xs tracking-widest text-blue-300 uppercase px-3 pt-1 pb-0.5" style="font-weight:700;">The 4 F's</p>
+              <a href="policy-forex.html"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Forex</a>
+              <a href="policy-fertiliser.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Fertiliser</a>
+              <a href="policy-fuel.html"       class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Fuel</a>
+              <a href="policy-food.html"       class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Food</a>
+              <div class="border-t border-white/10 my-1"></div>
+              <a href="manifesto.html"         class="font-body text-sm text-aford-gold py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Full Manifesto →</a>
+            </div>
+          </div>
+
+          <div>
+            <button id="mob-news-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              News <svg id="mob-news-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-news" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="news.html"           class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Latest News</a>
+              <a href="press-releases.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Press Releases</a>
+              <a href="statements.html"     class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party Statements</a>
+              <a href="events.html"         class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Upcoming Events</a>
+            </div>
+          </div>
+
+          <div>
+            <button id="mob-media-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              Media <svg id="mob-media-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-media" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="gallery.html"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Photo Gallery</a>
+              <a href="videos.html"       class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Videos</a>
+              <a href="media-center.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Press Resources</a>
+            </div>
+          </div>
+
+          <a href="membership.html" class="font-heading text-sm text-aford-gold py-2.5 px-3 rounded-lg hover:bg-white/10 border border-aford-gold/30 transition-all duration-150" style="font-weight:700;">Membership</a>
+          <a href="contact.html"    class="font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 hover:text-aford-gold transition-all duration-150" style="font-weight:600;">Contact</a>
+        </div>
+        <div class="pt-4 border-t border-white/10">
+          <a href="membership.html" class="font-heading text-sm text-center text-aford-gold-dk bg-aford-gold rounded-lg px-4 py-3 hover:brightness-110 transition-all duration-200 block" style="font-weight:700;">Join AFORD Today</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ════════════════════════════════════════════
+       HERO SLIDESHOW
+  ════════════════════════════════════════════ -->
+  <main>
+    <section id="hero" class="relative w-full overflow-hidden" style="height: calc(100vh - 36px);" aria-label="Hero slideshow">
+
+      <!-- ── SLIDE 1: Party Vision ── -->
+      <div class="hero-slide active" data-slide="0">
+        <div class="hero-bg" style="background-image: url('hero1.jpg');">
+          <!-- Gradient overlay: navy left, transparent right on desktop; full overlay on mobile -->
+          <div class="absolute inset-0 bg-gradient-to-r from-aford-navy/90 via-aford-navy/60 to-aford-navy/20"></div>
+          <div class="absolute inset-0 bg-aford-navy/30 sm:bg-transparent"></div>
+        </div>
+        <div class="relative z-10 h-full flex items-center">
+          <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full">
+            <div class="hero-content max-w-xl">
+              <span class="inline-block font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">Alliance for Democracy</span>
+              <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-5" style="font-weight:900;">
+                A Malawi That<br/>
+                <span class="text-aford-gold">Works for Everyone</span>
+              </h1>
+              <p class="font-body text-base sm:text-lg text-blue-100 leading-relaxed mb-8 max-w-md">
+                AFORD stands for democratic governance, economic dignity, and a future where no Malawian is left behind.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <a href="manifesto.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-6 py-3 hover:brightness-110 transition-all duration-200" style="font-weight:700;">Read Our Manifesto</a>
+                <a href="about.html"     class="font-heading text-sm text-white border border-white/40 rounded-lg px-6 py-3 hover:bg-white/10 hover:border-white transition-all duration-200" style="font-weight:600;">About AFORD</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SLIDE 2: The 4 F's ── -->
+      <div class="hero-slide" data-slide="1">
+        <div class="hero-bg" style="background-image: url('hero2.jpg');">
+          <div class="absolute inset-0 bg-gradient-to-r from-aford-navy/92 via-aford-navy/65 to-aford-navy/25"></div>
+          <div class="absolute inset-0 bg-aford-navy/30 sm:bg-transparent"></div>
+        </div>
+        <div class="relative z-10 h-full flex items-center">
+          <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full">
+            <div class="hero-content max-w-2xl">
+              <span class="inline-block font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">Our Core Agenda</span>
+              <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-5" style="font-weight:900;">
+                Built on the <span class="text-aford-gold">4 F's</span>
+              </h1>
+              <!-- 4 F's mini cards -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-7">
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+                  <p class="font-heading text-2xl text-aford-gold mb-0.5" style="font-weight:900;">F</p>
+                  <p class="font-heading text-sm text-white" style="font-weight:700;">Forex</p>
+                  <p class="font-body text-xs text-blue-200 leading-snug mt-1">Stable exchange rate</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+                  <p class="font-heading text-2xl text-aford-gold mb-0.5" style="font-weight:900;">F</p>
+                  <p class="font-heading text-sm text-white" style="font-weight:700;">Fertiliser</p>
+                  <p class="font-body text-xs text-blue-200 leading-snug mt-1">Affordable farm inputs</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+                  <p class="font-heading text-2xl text-aford-gold mb-0.5" style="font-weight:900;">F</p>
+                  <p class="font-heading text-sm text-white" style="font-weight:700;">Fuel</p>
+                  <p class="font-body text-xs text-blue-200 leading-snug mt-1">Consistent energy supply</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center">
+                  <p class="font-heading text-2xl text-aford-gold mb-0.5" style="font-weight:900;">F</p>
+                  <p class="font-heading text-sm text-white" style="font-weight:700;">Food</p>
+                  <p class="font-body text-xs text-blue-200 leading-snug mt-1">National food security</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-3">
+                <a href="policy-forex.html"  class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-6 py-3 hover:brightness-110 transition-all duration-200" style="font-weight:700;">Explore Our Policies</a>
+                <a href="manifesto.html"     class="font-heading text-sm text-white border border-white/40 rounded-lg px-6 py-3 hover:bg-white/10 hover:border-white transition-all duration-200" style="font-weight:600;">Full Manifesto</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SLIDE 3: Join the Movement ── -->
+      <div class="hero-slide" data-slide="2">
+        <div class="hero-bg" style="background-image: url('hero3.jpg');">
+          <div class="absolute inset-0 bg-gradient-to-r from-aford-navy/90 via-aford-navy/60 to-aford-navy/20"></div>
+          <div class="absolute inset-0 bg-aford-navy/30 sm:bg-transparent"></div>
+        </div>
+        <div class="relative z-10 h-full flex items-center">
+          <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 w-full">
+            <div class="hero-content max-w-xl">
+              <span class="inline-block font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">Be Part of the Change</span>
+              <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-5" style="font-weight:900;">
+                Join the <span class="text-aford-gold">Movement</span><br/>for Democracy
+              </h1>
+              <p class="font-body text-base sm:text-lg text-blue-100 leading-relaxed mb-8 max-w-md">
+                Thousands of Malawians have already joined AFORD. Your voice, your vote, and your membership matter. Together we build the Malawi we deserve.
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <a href="membership.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-6 py-3 hover:brightness-110 transition-all duration-200" style="font-weight:700;">Become a Member</a>
+                <a href="contact.html"    class="font-heading text-sm text-white border border-white/40 rounded-lg px-6 py-3 hover:bg-white/10 hover:border-white transition-all duration-200" style="font-weight:600;">Get in Touch</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Controls: prev / next arrows ── -->
+      <button id="hero-prev" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/10 border border-white/25 hover:bg-white/20 transition-all duration-200 flex items-center justify-center" aria-label="Previous slide">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button id="hero-next" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/10 border border-white/25 hover:bg-white/20 transition-all duration-200 flex items-center justify-center" aria-label="Next slide">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- ── Dot indicators ── -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2" role="tablist" aria-label="Slide indicators">
+        <button class="hero-dot active" role="tab" aria-selected="true"  aria-label="Slide 1" data-dot="0"></button>
+        <button class="hero-dot"        role="tab" aria-selected="false" aria-label="Slide 2" data-dot="1"></button>
+        <button class="hero-dot"        role="tab" aria-selected="false" aria-label="Slide 3" data-dot="2"></button>
+      </div>
+
+      <!-- ── Scroll cue ── -->
+      <div class="absolute bottom-8 right-8 z-20 hidden sm:flex flex-col items-center gap-2 opacity-60">
+        <span class="font-body text-xs text-white tracking-widest uppercase">Scroll</span>
+        <div class="w-px h-10 bg-white/40 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full bg-white animate-bounce" style="height:40%;animation-duration:1.5s;"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         4 F's DEEP SECTION
+    ════════════════════════════════════════════ -->
+    <section id="four-fs" class="bg-aford-navy overflow-hidden">
+
+      <!-- Section header -->
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 pb-14">
+        <div class="reveal text-center mb-4">
+          <span class="inline-block font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">AFORD's Core Agenda</span>
+          <!-- Giant decorative F·F·F·F -->
+          <div class="flex justify-center items-end gap-3 sm:gap-5 mb-2 leading-none select-none" aria-hidden="true">
+            <span class="font-heading text-7xl sm:text-8xl lg:text-9xl text-white/10" style="font-weight:900;">F</span>
+            <span class="font-heading text-7xl sm:text-8xl lg:text-9xl text-white/10" style="font-weight:900;">F</span>
+            <span class="font-heading text-7xl sm:text-8xl lg:text-9xl text-white/10" style="font-weight:900;">F</span>
+            <span class="font-heading text-7xl sm:text-8xl lg:text-9xl text-white/10" style="font-weight:900;">F</span>
+          </div>
+          <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl text-white leading-tight -mt-6 sm:-mt-10 lg:-mt-14 relative z-10" style="font-weight:900;">
+            The Four Pillars of<br/><span class="text-aford-gold">Every Malawian Life</span>
+          </h2>
+        </div>
+        <div class="reveal max-w-2xl mx-auto text-center">
+          <p class="font-body text-blue-200 text-base sm:text-lg leading-relaxed mb-6">
+            AFORD believes that four things determine whether a Malawian family lives with dignity or desperation — and that any serious government must address all four at once.
+          </p>
+          <div class="w-14 h-1 bg-aford-gold rounded-full mx-auto"></div>
+        </div>
+      </div>
+
+      <!-- 4 Cards grid -->
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <!-- ── FOREX ── -->
+          <div class="reveal f-card bg-aford-charcoal rounded-2xl overflow-hidden flex flex-col">
+            <!-- Image -->
+            <div class="f-img-wrap h-52">
+              <img src="img/forex.png" alt="Forex — Foreign exchange stability" />
+              <div class="f-img-overlay"></div>
+              <!-- F badge -->
+              <div class="absolute top-4 left-4 z-10">
+                <div class="w-10 h-10 rounded-xl bg-aford-gold flex items-center justify-center shadow-lg">
+                  <span class="font-heading text-xl text-aford-gold-dk leading-none" style="font-weight:900;">F</span>
+                </div>
+              </div>
+              <!-- Word over image -->
+              <div class="absolute bottom-4 left-4 z-10">
+                <p class="font-heading text-2xl text-white leading-none" style="font-weight:900;">Forex</p>
+                <p class="font-body text-xs text-blue-200 mt-0.5">Foreign Exchange</p>
+              </div>
+            </div>
+            <!-- Body -->
+            <div class="p-6 flex flex-col flex-1">
+              <p class="font-body text-sm text-blue-100 leading-relaxed mb-5 flex-1">
+                A stable exchange rate protects every Malawian's purchasing power. When the kwacha weakens, the cost of medicine, food, fuel, and school fees rises immediately — hitting the poorest hardest. AFORD's Forex policy targets macroeconomic discipline, export growth, and foreign reserve management to bring lasting stability.
+              </p>
+              <div class="border-t border-white/10 pt-4">
+                <a href="policy-forex.html" class="flex items-center justify-between group">
+                  <span class="font-heading text-sm text-aford-gold" style="font-weight:700;">Our Forex Policy</span>
+                  <svg class="w-4 h-4 text-aford-gold group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── FERTILISER ── -->
+          <div class="reveal f-card bg-aford-charcoal rounded-2xl overflow-hidden flex flex-col" style="transition-delay:0.1s">
+            <div class="f-img-wrap h-52">
+              <img src="img/fertilizer.png" alt="Fertiliser — Agricultural input support" />
+              <div class="f-img-overlay"></div>
+              <div class="absolute top-4 left-4 z-10">
+                <div class="w-10 h-10 rounded-xl bg-aford-gold flex items-center justify-center shadow-lg">
+                  <span class="font-heading text-xl text-aford-gold-dk leading-none" style="font-weight:900;">F</span>
+                </div>
+              </div>
+              <div class="absolute bottom-4 left-4 z-10">
+                <p class="font-heading text-2xl text-white leading-none" style="font-weight:900;">Fertiliser</p>
+                <p class="font-body text-xs text-blue-200 mt-0.5">Agricultural Inputs</p>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="font-body text-sm text-blue-100 leading-relaxed mb-5 flex-1">
+                Over 80% of Malawians depend on agriculture for their livelihood. Affordable, accessible fertiliser is not a subsidy — it is an investment in national survival. AFORD's Fertiliser policy commits to reliable input supply chains, transparent subsidy distribution, and support for small-scale farmers who feed the nation.
+              </p>
+              <div class="border-t border-white/10 pt-4">
+                <a href="policy-fertiliser.html" class="flex items-center justify-between group">
+                  <span class="font-heading text-sm text-aford-gold" style="font-weight:700;">Our Fertiliser Policy</span>
+                  <svg class="w-4 h-4 text-aford-gold group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── FUEL ── -->
+          <div class="reveal f-card bg-aford-charcoal rounded-2xl overflow-hidden flex flex-col" style="transition-delay:0.2s">
+            <div class="f-img-wrap h-52">
+              <img src="img/fuel.png" alt="Fuel — Energy security and supply" />
+              <div class="f-img-overlay"></div>
+              <div class="absolute top-4 left-4 z-10">
+                <div class="w-10 h-10 rounded-xl bg-aford-gold flex items-center justify-center shadow-lg">
+                  <span class="font-heading text-xl text-aford-gold-dk leading-none" style="font-weight:900;">F</span>
+                </div>
+              </div>
+              <div class="absolute bottom-4 left-4 z-10">
+                <p class="font-heading text-2xl text-white leading-none" style="font-weight:900;">Fuel</p>
+                <p class="font-body text-xs text-blue-200 mt-0.5">Energy Security</p>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="font-body text-sm text-blue-100 leading-relaxed mb-5 flex-1">
+                Fuel shortages paralyse hospitals, ground transport, halt businesses, and spike prices across every sector. Consistent fuel supply is the oxygen of the economy. AFORD's Fuel policy focuses on strategic reserves, transparent pricing mechanisms, and diversifying energy sources to end the chronic fuel crisis that has plagued Malawi for years.
+              </p>
+              <div class="border-t border-white/10 pt-4">
+                <a href="policy-fuel.html" class="flex items-center justify-between group">
+                  <span class="font-heading text-sm text-aford-gold" style="font-weight:700;">Our Fuel Policy</span>
+                  <svg class="w-4 h-4 text-aford-gold group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── FOOD ── -->
+          <div class="reveal f-card bg-aford-charcoal rounded-2xl overflow-hidden flex flex-col" style="transition-delay:0.3s">
+            <div class="f-img-wrap h-52">
+              <img src="img/food.png" alt="Food — National food security" />
+              <div class="f-img-overlay"></div>
+              <div class="absolute top-4 left-4 z-10">
+                <div class="w-10 h-10 rounded-xl bg-aford-gold flex items-center justify-center shadow-lg">
+                  <span class="font-heading text-xl text-aford-gold-dk leading-none" style="font-weight:900;">F</span>
+                </div>
+              </div>
+              <div class="absolute bottom-4 left-4 z-10">
+                <p class="font-heading text-2xl text-white leading-none" style="font-weight:900;">Food</p>
+                <p class="font-body text-xs text-blue-200 mt-0.5">Food Security</p>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="font-body text-sm text-blue-100 leading-relaxed mb-5 flex-1">
+                No Malawian family should go to bed hungry. Food security is not charity — it is a right and a foundation of national stability. AFORD's Food policy targets self-sufficiency through irrigation expansion, crop diversification, grain reserve management, and market access for smallholder farmers.
+              </p>
+              <div class="border-t border-white/10 pt-4">
+                <a href="policy-food.html" class="flex items-center justify-between group">
+                  <span class="font-heading text-sm text-aford-gold" style="font-weight:700;">Our Food Policy</span>
+                  <svg class="w-4 h-4 text-aford-gold group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bottom bar — manifesto CTA -->
+      <div class="reveal max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
+        <div class="bg-white/5 border border-white/10 rounded-2xl px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <p class="font-heading text-lg text-white mb-1" style="font-weight:800;">These four pillars underpin everything AFORD stands for.</p>
+            <p class="font-body text-sm text-blue-300 leading-relaxed">Read the full manifesto to see exactly how we plan to deliver on each one.</p>
+          </div>
+          <div class="flex gap-3 flex-shrink-0">
+            <a href="manifesto.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-6 py-3 hover:brightness-110 transition-all duration-200 whitespace-nowrap" style="font-weight:700;">Read Full Manifesto</a>
+            <a href="membership.html" class="font-heading text-sm text-white border border-white/30 rounded-lg px-6 py-3 hover:bg-white/10 transition-all duration-200 whitespace-nowrap" style="font-weight:600;">Join AFORD</a>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         WHY TRUST AFORD SECTION
+    ════════════════════════════════════════════ -->
+    <section id="why-trust" class="bg-aford-offwhite py-20 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+        <!-- Section header -->
+        <div class="reveal text-center mb-14">
+          <span class="inline-block font-heading text-xs tracking-widest text-aford-royal uppercase mb-4" style="font-weight:700;">Why Malawians Choose AFORD</span>
+          <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl text-aford-navy leading-tight mb-5" style="font-weight:900;">
+            A Party You Can Trust —<br class="hidden sm:block"/> Here's Why
+          </h2>
+          <p class="font-body text-base sm:text-lg text-aford-slate max-w-2xl mx-auto leading-relaxed">
+            AFORD's commitment to Malawi is not rhetoric. It is built on a foundation of proven action, principled leadership, and genuine accountability to the people — ward by ward, constituency by constituency.
+          </p>
+          <!-- Gold underline -->
+          <div class="w-14 h-1 bg-aford-gold rounded-full mx-auto mt-7"></div>
+        </div>
+
+        <!-- 3×2 trust card grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+
+          <!-- Card 1: Track Record of Courage -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-royal hover:shadow-lg transition-shadow duration-300">
+            <div class="w-12 h-12 bg-aford-ice rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Track Record of Courage</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              AFORD has stood firm on the hard issues when others stayed silent. From opposing bad governance to defending citizens' rights, our history is one of speaking truth to power — even when it came at a cost.
+            </p>
+          </div>
+
+          <!-- Card 2: Trusted Leadership -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-royal hover:shadow-lg transition-shadow duration-300" style="transition-delay:0.08s">
+            <div class="w-12 h-12 bg-aford-ice rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Trusted Leadership</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              Our leaders are known, accessible, and deeply rooted in Malawian communities — not distant figures chasing privilege. They come from the same villages, markets, and schools as the people they serve.
+            </p>
+          </div>
+
+          <!-- Card 3: Community Accountability — gold top -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-gold hover:shadow-lg transition-shadow duration-300" style="transition-delay:0.16s">
+            <div class="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Community Accountability</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              We answer to the people at the grassroots level — ward by ward, constituency by constituency, region by region. AFORD's structure ensures that ordinary Malawians can hold their representatives directly accountable.
+            </p>
+          </div>
+
+          <!-- Card 4: Inclusive Policy Vision -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-royal hover:shadow-lg transition-shadow duration-300" style="transition-delay:0.08s">
+            <div class="w-12 h-12 bg-aford-ice rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Inclusive Policy Vision</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              Our policies are shaped by all Malawians — women, youth, farmers, entrepreneurs, persons with disabilities, and the most marginalised among us. No voice is too small, no community too remote to matter to AFORD.
+            </p>
+          </div>
+
+          <!-- Card 5: Transparent Engagement — gold top -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-gold hover:shadow-lg transition-shadow duration-300" style="transition-delay:0.16s">
+            <div class="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Transparent Engagement</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              We publish our positions, share our decisions openly, and invite scrutiny at every level. A party with nothing to hide hides nothing. AFORD's commitment to transparency is not seasonal — it applies in opposition and in government equally.
+            </p>
+          </div>
+
+          <!-- Card 6: Real World Solutions -->
+          <div class="reveal bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-t-aford-royal hover:shadow-lg transition-shadow duration-300" style="transition-delay:0.24s">
+            <div class="w-12 h-12 bg-aford-ice rounded-xl flex items-center justify-center mb-5">
+              <svg class="w-6 h-6 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="font-heading text-lg text-aford-navy mb-3 leading-snug" style="font-weight:800;">Real World Solutions</h3>
+            <p class="font-body text-sm text-aford-slate leading-relaxed">
+              AFORD's agenda is practical, costed, and grounded in the daily realities of Malawian households — not empty campaign promises. The 4 F's are not slogans. They are a concrete, deliverable programme built on evidence and lived experience.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Bottom CTA strip -->
+        <div class="reveal">
+          <div class="bg-aford-navy rounded-2xl px-8 py-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+
+            <!-- Left: quote-style statement -->
+            <div class="flex items-start gap-5 max-w-xl">
+              <div class="w-1 flex-shrink-0 self-stretch bg-aford-gold rounded-full hidden sm:block"></div>
+              <div>
+                <p class="font-heading text-xl text-white leading-snug mb-2" style="font-weight:800;">
+                  "Ready to be part of a movement built on trust?"
+                </p>
+                <p class="font-body text-sm text-blue-300 leading-relaxed">
+                  Join thousands of Malawians who have already chosen AFORD — and help us build the country we all deserve.
+                </p>
+              </div>
+            </div>
+
+            <!-- Right: CTAs -->
+            <div class="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+              <a href="membership.html"
+                 class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-7 py-3 hover:brightness-110 transition-all duration-200 text-center whitespace-nowrap"
+                 style="font-weight:700;">
+                Join AFORD Today
+              </a>
+              <a href="manifesto.html"
+                 class="font-heading text-sm text-white border border-white/30 rounded-lg px-7 py-3 hover:bg-white/10 transition-all duration-200 text-center whitespace-nowrap"
+                 style="font-weight:600;">
+                Read Our Manifesto
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         NEWS SECTION
+    ════════════════════════════════════════════ -->
+    <section id="news" class="bg-aford-navy py-20 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+        <!-- Section header -->
+        <div class="reveal flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+          <div>
+            <span class="inline-block font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">Stay Informed</span>
+            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl text-white leading-tight" style="font-weight:900;">
+              Latest <span class="text-aford-gold">News &amp; Updates</span>
+            </h2>
+          </div>
+          <a href="news.html"
+             class="flex-shrink-0 font-heading text-sm text-white border border-white/30 rounded-lg px-5 py-2.5 hover:bg-white/10 hover:border-white transition-all duration-200 flex items-center gap-2 self-start sm:self-auto"
+             style="font-weight:600;">
+            All News
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- News grid: 1 featured + 3 secondary -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+
+          <!-- ── Featured article (spans 2 cols on lg) ── -->
+          <div class="reveal lg:col-span-2">
+            <a href="news.html#article-1" class="group block bg-aford-charcoal rounded-2xl overflow-hidden h-full hover:shadow-2xl transition-shadow duration-300">
+              <!-- Image -->
+              <div class="relative overflow-hidden h-64 sm:h-80">
+                <img src="img/news-featured.jpg" alt="Featured news article"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-gradient-to-t from-aford-navy/90 via-aford-navy/30 to-transparent"></div>
+                <!-- Category badge -->
+                <span class="absolute top-4 left-4 font-heading text-xs text-aford-gold-dk bg-aford-gold rounded-full px-3 py-1" style="font-weight:700;">Party Statement</span>
+              </div>
+              <!-- Content -->
+              <div class="p-7">
+                <p class="font-body text-xs text-blue-300 mb-3"><!-- PLACEHOLDER --> [Date e.g. 14 June 2025]</p>
+                <h3 class="font-heading text-xl text-white leading-snug mb-3 group-hover:text-aford-gold transition-colors duration-200" style="font-weight:800;">
+                  <!-- PLACEHOLDER: Replace with real headline -->
+                  [Featured article headline — the most important or recent story goes here]
+                </h3>
+                <p class="font-body text-sm text-blue-200 leading-relaxed mb-5 line-clamp-3">
+                  <!-- PLACEHOLDER: Replace with article excerpt -->
+                  [Two to three sentence excerpt summarising the featured story. This gives readers enough context to decide whether to click through to read the full article on news.html.]
+                </p>
+                <div class="flex items-center gap-2 text-aford-gold group-hover:gap-3 transition-all duration-200">
+                  <span class="font-heading text-sm" style="font-weight:700;">Read Full Story</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- ── 3 secondary articles (right column) ── -->
+          <div class="reveal flex flex-col gap-5" style="transition-delay:0.1s">
+
+            <!-- Secondary article 1 -->
+            <a href="news.html#article-2" class="group flex gap-4 bg-aford-charcoal rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-1">
+              <div class="relative w-28 flex-shrink-0 overflow-hidden">
+                <img src="img/news-2.jpg" alt="News article"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-aford-navy/20"></div>
+              </div>
+              <div class="py-5 pr-5 flex flex-col justify-center">
+                <span class="font-heading text-xs text-aford-gold uppercase mb-1.5" style="font-weight:700;">Press Release</span>
+                <h4 class="font-heading text-sm text-white leading-snug mb-1 group-hover:text-aford-gold transition-colors duration-200 line-clamp-2" style="font-weight:700;">
+                  <!-- PLACEHOLDER --> [News headline 2]
+                </h4>
+                <p class="font-body text-xs text-blue-300"><!-- PLACEHOLDER --> [Date]</p>
+              </div>
+            </a>
+
+            <!-- Secondary article 2 -->
+            <a href="news.html#article-3" class="group flex gap-4 bg-aford-charcoal rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-1">
+              <div class="relative w-28 flex-shrink-0 overflow-hidden">
+                <img src="img/news-3.jpg" alt="News article"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-aford-navy/20"></div>
+              </div>
+              <div class="py-5 pr-5 flex flex-col justify-center">
+                <span class="font-heading text-xs text-aford-gold uppercase mb-1.5" style="font-weight:700;">Event</span>
+                <h4 class="font-heading text-sm text-white leading-snug mb-1 group-hover:text-aford-gold transition-colors duration-200 line-clamp-2" style="font-weight:700;">
+                  <!-- PLACEHOLDER --> [News headline 3]
+                </h4>
+                <p class="font-body text-xs text-blue-300"><!-- PLACEHOLDER --> [Date]</p>
+              </div>
+            </a>
+
+            <!-- Secondary article 3 -->
+            <a href="news.html#article-4" class="group flex gap-4 bg-aford-charcoal rounded-2xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex-1">
+              <div class="relative w-28 flex-shrink-0 overflow-hidden">
+                <img src="img/news-4.jpg" alt="News article"
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-aford-navy/20"></div>
+              </div>
+              <div class="py-5 pr-5 flex flex-col justify-center">
+                <span class="font-heading text-xs text-aford-gold uppercase mb-1.5" style="font-weight:700;">Statement</span>
+                <h4 class="font-heading text-sm text-white leading-snug mb-1 group-hover:text-aford-gold transition-colors duration-200 line-clamp-2" style="font-weight:700;">
+                  <!-- PLACEHOLDER --> [News headline 4]
+                </h4>
+                <p class="font-body text-xs text-blue-300"><!-- PLACEHOLDER --> [Date]</p>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Bottom bar -->
+        <div class="reveal border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="font-body text-sm text-blue-300 text-center sm:text-left">
+            Get the latest news, press releases, and party statements delivered to your inbox.
+          </p>
+          <!-- Email subscribe strip -->
+          <form class="flex gap-2 w-full sm:w-auto" onsubmit="return false;">
+            <input type="email" placeholder="Your email address"
+                   class="font-body text-sm text-aford-charcoal bg-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-aford-gold/40 w-full sm:w-56 placeholder:text-gray-400" />
+            <button type="submit"
+                    class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-5 py-2.5 hover:brightness-110 transition-all duration-200 whitespace-nowrap flex-shrink-0"
+                    style="font-weight:700;">
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         CONTACT SECTION
+    ════════════════════════════════════════════ -->
+    <section id="contact" class="bg-white py-20 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
+
+        <!-- Section header -->
+        <div class="reveal text-center mb-14">
+          <span class="inline-block font-heading text-xs tracking-widest text-aford-royal uppercase mb-4" style="font-weight:700;">Get in Touch</span>
+          <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl text-aford-navy leading-tight mb-5" style="font-weight:900;">
+            We Want to <span class="text-aford-royal">Hear from You</span>
+          </h2>
+          <p class="font-body text-base sm:text-lg text-aford-slate max-w-2xl mx-auto leading-relaxed">
+            Whether you want to join AFORD, ask about our policies, report an issue in your constituency, or connect with your regional office — we are here.
+          </p>
+          <div class="w-14 h-1 bg-aford-gold rounded-full mx-auto mt-7"></div>
+        </div>
+
+        <!-- Two-column layout: form left, info right -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14">
+
+          <!-- ── Contact form (wider column) ── -->
+          <div class="reveal lg:col-span-3">
+            <div class="bg-aford-offwhite rounded-2xl p-8 sm:p-10">
+              <h3 class="font-heading text-xl text-aford-navy mb-7" style="font-weight:800;">Send Us a Message</h3>
+
+              <form id="contact-form" novalidate class="space-y-5">
+
+                <!-- Name + Subject row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label for="contact-name" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Full Name <span class="text-red-500">*</span></label>
+                    <input
+                      type="text" id="contact-name" name="name" required
+                      placeholder="e.g. Chisomo Banda"
+                      class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300"
+                    />
+                    <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your full name.</p>
+                  </div>
+                  <div>
+                    <label for="contact-subject" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Subject <span class="text-red-500">*</span></label>
+                    <select
+                      id="contact-subject" name="subject" required
+                      class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer"
+                    >
+                      <option value="" disabled selected>Select a subject</option>
+                      <option value="membership">Party Membership</option>
+                      <option value="policy">Policy Enquiry</option>
+                      <option value="constituency">Constituency Issue</option>
+                      <option value="media">Media / Press</option>
+                      <option value="volunteer">Volunteer / Get Involved</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please select a subject.</p>
+                  </div>
+                </div>
+
+                <!-- Email + Phone row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label for="contact-email" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Email Address <span class="text-red-500">*</span></label>
+                    <input
+                      type="email" id="contact-email" name="email" required
+                      placeholder="you@example.com"
+                      class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300"
+                    />
+                    <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter a valid email address.</p>
+                  </div>
+                  <div>
+                    <label for="contact-phone" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Phone <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                    <input
+                      type="tel" id="contact-phone" name="phone"
+                      placeholder="+265 999 000 000"
+                      class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300"
+                    />
+                  </div>
+                </div>
+
+                <!-- District -->
+                <div>
+                  <label for="contact-district" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">District <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                  <select
+                    id="contact-district" name="district"
+                    class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer"
+                  >
+                    <option value="">Select your district</option>
+                    <optgroup label="Northern Region">
+                      <option>Chitipa</option><option>Karonga</option><option>Likoma</option>
+                      <option>Mzimba</option><option>Nkhata Bay</option><option>Rumphi</option>
+                    </optgroup>
+                    <optgroup label="Central Region">
+                      <option>Dedza</option><option>Dowa</option><option>Kasungu</option>
+                      <option>Lilongwe</option><option>Mchinji</option><option>Nkhotakota</option>
+                      <option>Ntcheu</option><option>Ntchisi</option><option>Salima</option>
+                    </optgroup>
+                    <optgroup label="Southern Region">
+                      <option>Balaka</option><option>Blantyre</option><option>Chikwawa</option>
+                      <option>Chiradzulu</option><option>Machinga</option><option>Mangochi</option>
+                      <option>Mulanje</option><option>Mwanza</option><option>Neno</option>
+                      <option>Nsanje</option><option>Thyolo</option><option>Phalombe</option>
+                      <option>Zomba</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <!-- Message -->
+                <div>
+                  <label for="contact-message" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Message <span class="text-red-500">*</span></label>
+                  <textarea
+                    id="contact-message" name="message" required rows="5"
+                    placeholder="Tell us how we can help you..."
+                    class="w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300 resize-none"
+                  ></textarea>
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your message.</p>
+                </div>
+
+                <!-- Consent -->
+                <div class="flex items-start gap-3">
+                  <input type="checkbox" id="contact-consent" name="consent" required
+                    class="mt-0.5 w-4 h-4 rounded border-gray-300 text-aford-royal focus:ring-aford-royal/30 flex-shrink-0 cursor-pointer" />
+                  <label for="contact-consent" class="font-body text-sm text-aford-slate leading-relaxed cursor-pointer">
+                    I agree to AFORD contacting me regarding my enquiry. My information will not be shared with third parties.
+                  </label>
+                </div>
+                <p id="consent-error" class="hidden font-body text-xs text-red-500 -mt-3">Please accept the consent checkbox to continue.</p>
+
+                <!-- Submit -->
+                <button
+                  type="submit" id="contact-submit"
+                  class="w-full font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-xl px-6 py-4 hover:brightness-110 transition-all duration-200 flex items-center justify-center gap-2"
+                  style="font-weight:700;">
+                  <span id="submit-label">Send Message</span>
+                  <svg id="submit-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  <!-- Spinner (hidden by default) -->
+                  <svg id="submit-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                </button>
+
+                <!-- Success message -->
+                <div id="form-success" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
+                  <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div>
+                    <p class="font-heading text-sm text-green-800 mb-0.5" style="font-weight:700;">Message sent successfully!</p>
+                    <p class="font-body text-sm text-green-700">Thank you for reaching out. Our team will get back to you within 2 working days.</p>
+                  </div>
+                </div>
+
+                <!-- Error message -->
+                <div id="form-error" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+                  <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <div>
+                    <p class="font-heading text-sm text-red-800 mb-0.5" style="font-weight:700;">Something went wrong.</p>
+                    <p class="font-body text-sm text-red-700">Please try again or email us directly at <a href="mailto:info@aford.org.mw" class="underline">info@aford.org.mw</a>.</p>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+
+          <!-- ── Contact info (narrower column) ── -->
+          <div class="reveal lg:col-span-2 flex flex-col gap-6" style="transition-delay:0.1s">
+
+            <!-- HQ card -->
+            <div class="bg-aford-navy rounded-2xl p-7 text-white">
+              <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-aford-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+                <p class="font-heading text-base" style="font-weight:800;">National Headquarters</p>
+              </div>
+              <div class="space-y-2 pl-1">
+                <p class="font-body text-sm text-blue-200 leading-relaxed">
+                  <!-- PLACEHOLDER: Replace with actual HQ address -->
+                  [AFORD National HQ Address]<br/>
+                  Lilongwe, Malawi
+                </p>
+              </div>
+            </div>
+
+            <!-- Contact details card -->
+            <div class="bg-aford-offwhite rounded-2xl p-7 border border-gray-100">
+              <h3 class="font-heading text-base text-aford-navy mb-5" style="font-weight:800;">Direct Contacts</h3>
+              <div class="space-y-4">
+
+                <div class="flex items-start gap-4">
+                  <div class="w-9 h-9 bg-aford-ice rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-heading text-xs text-aford-slate uppercase tracking-wide mb-0.5" style="font-weight:700;">Email</p>
+                    <a href="mailto:info@aford.org.mw" class="font-body text-sm text-aford-royal hover:text-aford-sky transition-colors duration-150">info@aford.org.mw</a>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-9 h-9 bg-aford-ice rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-heading text-xs text-aford-slate uppercase tracking-wide mb-0.5" style="font-weight:700;">Phone</p>
+                    <!-- PLACEHOLDER: Replace with actual phone numbers -->
+                    <a href="tel:+265000000000" class="font-body text-sm text-aford-royal hover:text-aford-sky transition-colors duration-150">+265 [phone number]</a>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                  <div class="w-9 h-9 bg-aford-ice rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  </div>
+                  <div>
+                    <p class="font-heading text-xs text-aford-slate uppercase tracking-wide mb-0.5" style="font-weight:700;">Office Hours</p>
+                    <p class="font-body text-sm text-aford-charcoal">Mon – Fri: 8:00am – 5:00pm</p>
+                    <p class="font-body text-sm text-aford-slate">Sat: 8:00am – 12:00pm</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Social media card -->
+            <div class="bg-aford-offwhite rounded-2xl p-7 border border-gray-100">
+              <h3 class="font-heading text-base text-aford-navy mb-5" style="font-weight:800;">Follow AFORD</h3>
+              <div class="flex flex-col gap-3">
+
+                <a href="#" class="flex items-center gap-3 group">
+                  <div class="w-9 h-9 bg-[#1877F2] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <span class="font-body text-sm text-aford-charcoal group-hover:text-aford-royal transition-colors duration-150">Facebook — AFORD Malawi</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 group">
+                  <div class="w-9 h-9 bg-[#1DA1F2] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+                  </div>
+                  <span class="font-body text-sm text-aford-charcoal group-hover:text-aford-royal transition-colors duration-150">Twitter / X — @AFORDMalawi</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 group">
+                  <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  </div>
+                  <span class="font-body text-sm text-aford-charcoal group-hover:text-aford-royal transition-colors duration-150">Instagram — @afordmalawi</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-3 group">
+                  <div class="w-9 h-9 bg-[#FF0000] rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                  </div>
+                  <span class="font-body text-sm text-aford-charcoal group-hover:text-aford-royal transition-colors duration-150">YouTube — AFORD TV</span>
+                </a>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         FOOTER
+    ════════════════════════════════════════════ -->
+
+  </main>
+
+  <footer class="bg-aford-charcoal" aria-label="Site footer">
+
+    <!-- ── Pre-footer CTA band ── -->
+    <div class="bg-aford-royal">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="text-center sm:text-left">
+          <p class="font-heading text-xl text-white mb-1" style="font-weight:800;">Stand with AFORD. Build the Malawi we deserve.</p>
+          <p class="font-body text-sm text-blue-200">Join the movement — membership is free and open to all Malawians.</p>
+        </div>
+        <a href="membership.html"
+           class="flex-shrink-0 font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-7 py-3 hover:brightness-110 transition-all duration-200 whitespace-nowrap"
+           style="font-weight:700;">
+          Become a Member
+        </a>
+      </div>
+    </div>
+
+    <!-- ── Main footer body ── -->
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+
+        <!-- Col 1: Brand -->
+        <div class="lg:col-span-1">
+          <!-- Logo + name -->
+          <a href="index.html" class="flex items-center gap-3 mb-5 group">
+            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-aford-gold flex-shrink-0 group-hover:border-white transition-colors duration-200">
+              <img src="aford_logo.png" alt="AFORD logo" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p class="font-heading text-white text-lg leading-none" style="font-weight:800;">AFORD</p>
+              <p class="font-body text-blue-400 text-xs mt-0.5">Alliance for Democracy</p>
+            </div>
+          </a>
+          <p class="font-body text-sm text-slate-400 leading-relaxed mb-6">
+            Founded in 1992, AFORD is committed to democratic governance, economic dignity, and a Malawi that works for every citizen — guided by the 4 F's.
+          </p>
+          <!-- Social icons row -->
+          <div class="flex items-center gap-3">
+            <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/8 hover:bg-[#1877F2] flex items-center justify-center transition-colors duration-200">
+              <svg class="w-4 h-4 text-slate-400 hover:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="#" aria-label="Twitter / X" class="w-9 h-9 rounded-lg bg-white/8 hover:bg-[#1DA1F2] flex items-center justify-center transition-colors duration-200">
+              <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-lg bg-white/8 flex items-center justify-center transition-colors duration-200 hover:opacity-90" style="background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-lg bg-white/8 hover:bg-[#FF0000] flex items-center justify-center transition-colors duration-200">
+              <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Col 2: About links -->
+        <div>
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-5" style="font-weight:700;">The Party</p>
+          <ul class="space-y-3">
+            <li><a href="about.html"        class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">About AFORD</a></li>
+            <li><a href="about.html#history"      class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Party History</a></li>
+            <li><a href="about.html#leadership"   class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Leadership & Structure</a></li>
+            <li><a href="about.html#constitution" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Party Constitution</a></li>
+            <li><a href="manifesto.html"    class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Full Manifesto</a></li>
+          </ul>
+
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-5 mt-8" style="font-weight:700;">The 4 F's</p>
+          <ul class="space-y-3">
+            <li><a href="policy-forex.html"      class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Forex</a></li>
+            <li><a href="policy-fertiliser.html" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Fertiliser</a></li>
+            <li><a href="policy-fuel.html"       class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Fuel</a></li>
+            <li><a href="policy-food.html"       class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Food</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: News & Media links -->
+        <div>
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-5" style="font-weight:700;">News & Media</p>
+          <ul class="space-y-3">
+            <li><a href="news.html"           class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Latest News</a></li>
+            <li><a href="press-releases.html" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Press Releases</a></li>
+            <li><a href="statements.html"     class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Party Statements</a></li>
+            <li><a href="events.html"         class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Upcoming Events</a></li>
+            <li><a href="gallery.html"        class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Photo Gallery</a></li>
+            <li><a href="videos.html"         class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Videos</a></li>
+            <li><a href="media-center.html"   class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Press Resources</a></li>
+          </ul>
+
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-5 mt-8" style="font-weight:700;">Get Involved</p>
+          <ul class="space-y-3">
+            <li><a href="membership.html"  class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Become a Member</a></li>
+            <li><a href="membership.html#volunteer" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Volunteer</a></li>
+            <li><a href="membership.html#donate"    class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">Donate</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact + regional offices -->
+        <div>
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-5" style="font-weight:700;">Contact</p>
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-aford-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="font-body text-sm text-slate-400 leading-relaxed">[AFORD National HQ]<br/>Lilongwe, Malawi</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-aford-gold flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <a href="mailto:info@aford.org.mw" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">info@aford.org.mw</a>
+            </li>
+            <li class="flex items-center gap-3">
+              <svg class="w-4 h-4 text-aford-gold flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              <a href="tel:+265000000000" class="font-body text-sm text-slate-400 hover:text-white transition-colors duration-150">+265 [number]</a>
+            </li>
+          </ul>
+
+          <!-- Regional offices -->
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-4" style="font-weight:700;">Regional Offices</p>
+          <ul class="space-y-3">
+            <li>
+              <p class="font-heading text-xs text-white mb-0.5" style="font-weight:700;">Northern Region</p>
+              <p class="font-body text-xs text-slate-500">[Office address, Mzimba]</p>
+            </li>
+            <li>
+              <p class="font-heading text-xs text-white mb-0.5" style="font-weight:700;">Central Region</p>
+              <p class="font-body text-xs text-slate-500">[Office address, Lilongwe]</p>
+            </li>
+            <li>
+              <p class="font-heading text-xs text-white mb-0.5" style="font-weight:700;">Southern Region</p>
+              <p class="font-body text-xs text-slate-500">[Office address, Blantyre]</p>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- ── Divider ── -->
+      <div class="border-t border-white/8 pt-8">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+
+          <!-- Copyright -->
+          <p class="font-body text-xs text-slate-500 text-center sm:text-left">
+            &copy; <span id="footer-year"></span> Alliance for Democracy (AFORD). All rights reserved.
+          </p>
+
+          <!-- Legal links -->
+          <div class="flex flex-wrap items-center justify-center gap-4">
+            <a href="privacy.html"  class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">Privacy Policy</a>
+            <span class="text-slate-700">·</span>
+            <a href="terms.html"    class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">Terms of Use</a>
+            <span class="text-slate-700">·</span>
+            <a href="sitemap.html"  class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">Sitemap</a>
+          </div>
+
+          <!-- Back to top -->
+          <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+                  class="flex items-center gap-2 font-heading text-xs text-slate-400 hover:text-white transition-colors duration-150 group"
+                  style="font-weight:600;" aria-label="Back to top">
+            Back to top
+            <div class="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white group-hover:bg-white/10 transition-all duration-200">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+            </div>
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ════════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════════ -->
+  <script>
+    // ── Hamburger ────────────────────────────
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1 = document.getElementById('bar1');
+    const bar2 = document.getElementById('bar2');
+    const bar3 = document.getElementById('bar3');
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      bar1.style.transform = ''; bar2.style.opacity = '1'; bar3.style.transform = '';
+    }
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.contains('open');
+      mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(!isOpen));
+      if (!isOpen) {
+        bar1.style.transform = 'translateY(8px) rotate(45deg)';
+        bar2.style.opacity = '0';
+        bar3.style.transform = 'translateY(-8px) rotate(-45deg)';
+      } else { closeMobileMenu(); }
+    });
+    mobileMenu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMobileMenu));
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#mobile-menu') && !e.target.closest('#hamburger')) closeMobileMenu();
+    });
+
+    // ── Mobile accordions ────────────────────
+    function makeAccordion(btnId, menuId, chevId) {
+      const btn = document.getElementById(btnId);
+      const menu = document.getElementById(menuId);
+      const chev = document.getElementById(chevId);
+      if (!btn || !menu || !chev) return;
+      btn.addEventListener('click', () => {
+        const open = !menu.classList.contains('hidden');
+        ['mob-about','mob-policies','mob-news','mob-media'].forEach(id => {
+          if (id !== menuId) {
+            document.getElementById(id)?.classList.add('hidden');
+            const c = document.getElementById(id + '-chev');
+            const b = document.getElementById(id + '-btn');
+            if (c) c.style.transform = '';
+            if (b) b.setAttribute('aria-expanded','false');
+          }
+        });
+        menu.classList.toggle('hidden', open);
+        chev.style.transform = open ? '' : 'rotate(180deg)';
+        btn.setAttribute('aria-expanded', String(!open));
+      });
+    }
+    makeAccordion('mob-about-btn',    'mob-about',    'mob-about-chev');
+    makeAccordion('mob-policies-btn', 'mob-policies', 'mob-policies-chev');
+    makeAccordion('mob-news-btn',     'mob-news',     'mob-news-chev');
+    makeAccordion('mob-media-btn',    'mob-media',    'mob-media-chev');
+
+    // ── Navbar scroll effect ─────────────────
+    const navbar = document.getElementById('navbar');
+    const annBar = document.getElementById('announcement-bar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > annBar.offsetHeight + 10);
+    }, { passive: true });
+
+    // ── Hero slideshow ───────────────────────
+    const slides    = document.querySelectorAll('.hero-slide');
+    const dots      = document.querySelectorAll('.hero-dot');
+    let current     = 0;
+    let autoTimer   = null;
+    const DURATION  = 6000; // ms per slide
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      dots[current].setAttribute('aria-selected', 'false');
+
+      current = (index + slides.length) % slides.length;
+
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+      dots[current].setAttribute('aria-selected', 'true');
+    }
+
+    function startAuto() {
+      clearInterval(autoTimer);
+      autoTimer = setInterval(() => goTo(current + 1), DURATION);
+    }
+
+    function resetAuto() { startAuto(); }
+
+    document.getElementById('hero-prev').addEventListener('click', () => { goTo(current - 1); resetAuto(); });
+    document.getElementById('hero-next').addEventListener('click', () => { goTo(current + 1); resetAuto(); });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => { goTo(Number(dot.dataset.dot)); resetAuto(); });
+    });
+
+    // Pause on hover
+    const heroSection = document.getElementById('hero');
+    heroSection.addEventListener('mouseenter', () => clearInterval(autoTimer));
+    heroSection.addEventListener('mouseleave', startAuto);
+
+    // Swipe support for mobile
+    let touchStartX = 0;
+    heroSection.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    heroSection.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) { goTo(diff > 0 ? current + 1 : current - 1); resetAuto(); }
+    }, { passive: true });
+
+    // Keyboard navigation
+    heroSection.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { goTo(current - 1); resetAuto(); }
+      if (e.key === 'ArrowRight') { goTo(current + 1); resetAuto(); }
+    });
+
+    startAuto();
+
+    // ── Scroll reveal ────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // ── Footer year ──────────────────────────
+    const footerYear = document.getElementById('footer-year');
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+    // ── Contact form validation & submit ─────
+    const contactForm    = document.getElementById('contact-form');
+    const submitBtn      = document.getElementById('contact-submit');
+    const submitLabel    = document.getElementById('submit-label');
+    const submitIcon     = document.getElementById('submit-icon');
+    const submitSpinner  = document.getElementById('submit-spinner');
+    const formSuccess    = document.getElementById('form-success');
+    const formError      = document.getElementById('form-error');
+
+    function validateField(input) {
+      const errEl = input.closest('div')?.querySelector('.field-error');
+      let valid = true;
+      if (input.required && !input.value.trim()) valid = false;
+      if (input.type === 'email' && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) valid = false;
+      if (errEl) errEl.classList.toggle('hidden', valid);
+      input.classList.toggle('border-red-400', !valid);
+      input.classList.toggle('border-gray-200', valid);
+      return valid;
+    }
+
+    contactForm.querySelectorAll('input[required], select[required], textarea[required]').forEach(el => {
+      el.addEventListener('blur',  () => validateField(el));
+      el.addEventListener('input', () => validateField(el));
+    });
+
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formSuccess.classList.add('hidden');
+      formError.classList.add('hidden');
+
+      const fields = [...contactForm.querySelectorAll('input[required], select[required], textarea[required]')];
+      const consentEl  = document.getElementById('contact-consent');
+      const consentErr = document.getElementById('consent-error');
+      let allValid = fields.every(f => validateField(f));
+
+      if (!consentEl.checked) { consentErr.classList.remove('hidden'); allValid = false; }
+      else { consentErr.classList.add('hidden'); }
+
+      if (!allValid) return;
+
+      // Loading state
+      submitLabel.textContent = 'Sending…';
+      submitIcon.classList.add('hidden');
+      submitSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      try {
+        // Wire to your FastAPI endpoint: POST /api/contact
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name:     document.getElementById('contact-name').value.trim(),
+            email:    document.getElementById('contact-email').value.trim(),
+            phone:    document.getElementById('contact-phone').value.trim(),
+            subject:  document.getElementById('contact-subject').value,
+            district: document.getElementById('contact-district').value,
+            message:  document.getElementById('contact-message').value.trim(),
+          })
+        });
+        if (res.ok) {
+          contactForm.reset();
+          formSuccess.classList.remove('hidden');
+          formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else { throw new Error(); }
+      } catch {
+        formError.classList.remove('hidden');
+        formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } finally {
+        submitLabel.textContent = 'Send Message';
+        submitIcon.classList.remove('hidden');
+        submitSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
