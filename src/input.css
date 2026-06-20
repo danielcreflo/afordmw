@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-aford-royal: #1A4FBB;
+  --color-aford-navy: #0C2D6B;
+  --color-aford-sky: #2E6FD8;
+  --color-aford-ice: #DDEAF8;
+  --color-aford-gold: #D4A017;
+  --color-aford-gold-dk: #412402;
+  --color-aford-charcoal: #1E1E2C;
+  --color-aford-slate: #4A4A5A;
+  --color-aford-offwhite: #F4F6FA;
+
+  --font-heading: "Barlow", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+}
