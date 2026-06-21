@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — AFORD</title>
+
+  <link rel="stylesheet" href="css/output.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Barlow', sans-serif; }
+
+    /* Animated gradient backdrop */
+    .auth-bg {
+      background: radial-gradient(circle at 15% 20%, rgba(26,79,187,0.5) 0%, transparent 45%),
+                  radial-gradient(circle at 85% 80%, rgba(212,160,23,0.18) 0%, transparent 50%),
+                  linear-gradient(160deg, #0C2D6B 0%, #08204D 60%, #061A3D 100%);
+    }
+
+    /* Subtle grid texture */
+    .grid-texture {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* Card entrance */
+    .auth-card {
+      animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(26,79,187,0.15);
+    }
+    .form-input.invalid { border-color: #f87171 !important; }
+
+    /* Password toggle eye */
+    .toggle-eye { cursor: pointer; }
+
+    /* Loading spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 0.7s linear infinite; }
+
+    /* Custom checkbox */
+    input[type="checkbox"].aford-check {
+      appearance: none;
+      width: 18px; height: 18px;
+      border: 1.5px solid #D1D5DB;
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    input[type="checkbox"].aford-check:checked {
+      background: #1A4FBB;
+      border-color: #1A4FBB;
+    }
+    input[type="checkbox"].aford-check:checked::after {
+      content: '';
+      position: absolute;
+      left: 5px; top: 1px;
+      width: 5px; height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .auth-card { animation: none; }
+    }
+  </style>
+</head>
+
+<body class="auth-bg grid-texture min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden">
+
+  <!-- Decorative floating shapes -->
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-aford-royal/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-32 -right-20 w-[28rem] h-[28rem] bg-aford-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="w-full max-w-md relative z-10">
+
+    <!-- Logo + branding -->
+    <div class="flex flex-col items-center mb-8">
+      <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-aford-gold flex-shrink-0 mb-4 shadow-lg shadow-black/20">
+        <img src="../aford_logo.png" alt="AFORD logo" class="w-full h-full object-cover" />
+      </div>
+      <p class="font-heading text-white text-lg tracking-wide" style="font-weight:800;">AFORD</p>
+      <p class="font-body text-blue-300 text-xs">Alliance for Democracy</p>
+    </div>
+
+    <!-- Auth card -->
+    <div class="auth-card bg-white rounded-2xl shadow-2xl shadow-black/30 p-8 sm:p-10">
+
+      <div class="mb-7">
+        <p class="font-heading text-xs tracking-widest text-aford-royal uppercase mb-2" style="font-weight:700;">Administrator Access</p>
+        <h1 class="font-heading text-2xl text-aford-navy leading-tight" style="font-weight:800;">Sign in to your dashboard</h1>
+      </div>
+
+      <!-- Login error banner (hidden by default) -->
+      <div id="login-error" class="hidden mb-5 bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div>
+          <p class="font-heading text-sm text-red-800 mb-0.5" style="font-weight:700;">Sign-in failed</p>
+          <p class="font-body text-sm text-red-700" id="login-error-message">Invalid email/username or password. Please try again.</p>
+        </div>
+      </div>
+
+      <!-- Lockout warning banner (hidden by default) -->
+      <div id="login-lockout" class="hidden mb-5 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <div>
+          <p class="font-heading text-sm text-amber-800 mb-0.5" style="font-weight:700;">Too many attempts</p>
+          <p class="font-body text-sm text-amber-700">Your account has been temporarily locked. Please try again in a few minutes or reset your password.</p>
+        </div>
+      </div>
+
+      <form id="login-form" novalidate class="space-y-5">
+
+        <!-- Email/Username -->
+        <div>
+          <label for="login-identifier" class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Email or Username</label>
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            <input
+              type="text" id="login-identifier" name="identifier" required autocomplete="username"
+              placeholder="admin@aford.org.mw"
+              class="form-input w-full font-body text-sm text-aford-charcoal bg-aford-offwhite border border-gray-200 rounded-xl pl-11 pr-4 py-3.5 focus:outline-none focus:border-aford-royal transition-all duration-200 placeholder:text-gray-400" />
+          </div>
+          <p class="field-error hidden font-body text-xs text-red-500 mt-1.5">Please enter your email or username.</p>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label for="login-password" class="block font-heading text-xs text-aford-navy uppercase tracking-wide" style="font-weight:700;">Password</label>
+            <a href="admin-forgot-password.html" class="font-body text-xs text-aford-royal hover:text-aford-sky transition-colors duration-150">Forgot password?</a>
+          </div>
+          <div class="relative">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input
+              type="password" id="login-password" name="password" required autocomplete="current-password"
+              placeholder="Enter your password"
+              class="form-input w-full font-body text-sm text-aford-charcoal bg-aford-offwhite border border-gray-200 rounded-xl pl-11 pr-11 py-3.5 focus:outline-none focus:border-aford-royal transition-all duration-200 placeholder:text-gray-400" />
+            <button type="button" id="toggle-password" class="toggle-eye absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-aford-royal transition-colors duration-150" aria-label="Show password">
+              <svg id="eye-open" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg id="eye-closed" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"/></svg>
+            </button>
+          </div>
+          <p class="field-error hidden font-body text-xs text-red-500 mt-1.5">Please enter your password.</p>
+        </div>
+
+        <!-- Remember me -->
+        <div class="flex items-center justify-between">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input type="checkbox" id="remember-me" name="remember" class="aford-check" />
+            <span class="font-body text-sm text-aford-slate">Remember me on this device</span>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit" id="login-submit"
+          class="w-full font-heading text-sm text-white bg-aford-royal rounded-xl px-6 py-3.5 hover:bg-aford-sky transition-all duration-200 flex items-center justify-center gap-2 mt-2"
+          style="font-weight:700;">
+          <span id="submit-label">Sign In</span>
+          <svg id="submit-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          <svg id="submit-spinner" class="hidden w-4 h-4 spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+        </button>
+
+      </form>
+
+      <!-- Security note -->
+      <div class="mt-7 pt-6 border-t border-gray-100 flex items-start gap-2.5">
+        <svg class="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <p class="font-body text-xs text-gray-400 leading-relaxed">This is a restricted system. Access is logged and limited to authorised AFORD administrators only.</p>
+      </div>
+
+    </div>
+
+    <!-- Back to public site -->
+    <div class="text-center mt-6">
+      <a href="../index.html" class="font-body text-sm text-blue-300 hover:text-white transition-colors duration-150 inline-flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        Back to AFORD website
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Password visibility toggle ──────────────
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput  = document.getElementById('login-password');
+    const eyeOpen        = document.getElementById('eye-open');
+    const eyeClosed      = document.getElementById('eye-closed');
+
+    togglePassword.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      eyeOpen.classList.toggle('hidden', isPassword);
+      eyeClosed.classList.toggle('hidden', !isPassword);
+      togglePassword.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    });
+
+    // ── Form validation & submit ────────────────
+    const form         = document.getElementById('login-form');
+    const identifier    = document.getElementById('login-identifier');
+    const password       = document.getElementById('login-password');
+    const submitBtn      = document.getElementById('login-submit');
+    const submitLabel    = document.getElementById('submit-label');
+    const submitIcon     = document.getElementById('submit-icon');
+    const submitSpinner  = document.getElementById('submit-spinner');
+    const loginError     = document.getElementById('login-error');
+    const loginErrorMsg  = document.getElementById('login-error-message');
+    const loginLockout   = document.getElementById('login-lockout');
+
+    function validateField(field) {
+      const errEl = field.closest('div').parentElement.querySelector('.field-error')
+                 || field.closest('div').querySelector('.field-error');
+      const valid = field.value.trim() !== '';
+      field.classList.toggle('invalid', !valid);
+      if (errEl) errEl.classList.toggle('hidden', valid);
+      return valid;
+    }
+
+    [identifier, password].forEach(field => {
+      field.addEventListener('blur', () => validateField(field));
+      field.addEventListener('input', () => validateField(field));
+    });
+
+    let failedAttempts = 0;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.classList.add('hidden');
+      loginLockout.classList.add('hidden');
+
+      const idValid  = validateField(identifier);
+      const pwValid  = validateField(password);
+      if (!idValid || !pwValid) return;
+
+      submitLabel.textContent = 'Signing in…';
+      submitIcon.classList.add('hidden');
+      submitSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      try {
+        // Wire to your FastAPI endpoint: POST /api/admin/login
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            identifier: identifier.value.trim(),
+            password: password.value,
+            remember: document.getElementById('remember-me').checked
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          // Expecting { token: "..." } or session cookie set by backend
+          if (data.token) {
+            const storage = document.getElementById('remember-me').checked ? localStorage : sessionStorage;
+            storage.setItem('aford_admin_token', data.token);
+          }
+          window.location.href = 'admin-dashboard.html';
+        } else if (res.status === 423) {
+          loginLockout.classList.remove('hidden');
+          loginLockout.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          failedAttempts++;
+          loginErrorMsg.textContent = 'Invalid email/username or password. Please try again.';
+          loginError.classList.remove('hidden');
+          loginError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          password.value = '';
+          password.focus();
+        }
+      } catch {
+        loginErrorMsg.textContent = 'Could not reach the server. Please check your connection and try again.';
+        loginError.classList.remove('hidden');
+      } finally {
+        submitLabel.textContent = 'Sign In';
+        submitIcon.classList.remove('hidden');
+        submitSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+
+    // ── Auto-redirect if already logged in ──────
+    if (localStorage.getItem('aford_admin_token') || sessionStorage.getItem('aford_admin_token')) {
+      // Uncomment once admin-dashboard.html exists:
+      // window.location.href = 'admin-dashboard.html';
+    }
+  </script>
+
+</body>
+</html>
