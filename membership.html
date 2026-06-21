@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Member — AFORD Alliance for Democracy</title>
+
+  <link rel="stylesheet" href="css/output.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    body { font-family: 'DM Sans', sans-serif; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Barlow', sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    #navbar { transition: background 0.3s ease, box-shadow 0.3s ease; }
+    #navbar.scrolled {
+      background: rgba(12,45,107,0.97);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 24px rgba(12,45,107,0.18);
+    }
+    #mobile-menu { max-height:0; overflow:hidden; transition:max-height 0.35s ease; }
+    #mobile-menu.open { max-height:540px; }
+
+    .nav-link { position:relative; padding-bottom:2px; }
+    .nav-link::after {
+      content:''; position:absolute; left:0; bottom:-2px;
+      width:0; height:2px; background:#D4A017; transition:width 0.25s ease;
+    }
+    .nav-link:hover::after { width:100%; }
+
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+    .ticker-track { display:flex; width:max-content; animation:ticker 22s linear infinite; }
+    .ticker-track:hover { animation-play-state:paused; }
+
+    /* Sidebar nav */
+    .section-nav-link {
+      display:block; padding:0.6rem 1rem;
+      border-left:2px solid transparent;
+      font-family:'DM Sans',sans-serif; font-size:0.875rem; color:#4A4A5A;
+      transition:all 0.2s ease;
+    }
+    .section-nav-link:hover, .section-nav-link.active {
+      border-left-color:#1A4FBB; color:#0C2D6B;
+      background:#DDEAF8; font-weight:500;
+    }
+
+    /* Policy page 4F nav pills */
+    .f-pill {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 14px; border-radius:9999px;
+      font-family:'Barlow',sans-serif; font-size:0.75rem; font-weight:700;
+      border:1.5px solid rgba(255,255,255,0.2);
+      color:rgba(255,255,255,0.6);
+      transition:all 0.2s ease;
+    }
+    .f-pill:hover { border-color:rgba(255,255,255,0.5); color:#fff; }
+    .f-pill.active { background:#D4A017; border-color:#D4A017; color:#412402; }
+
+    /* Stat card shimmer border */
+    .stat-card {
+      position:relative;
+      border-top:3px solid #D4A017;
+    }
+
+    /* Reveal */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* Intervention item */
+    .intervention-item {
+      border-left:3px solid #1A4FBB;
+      padding-left:1.25rem;
+      transition: border-color 0.2s ease;
+    }
+    .intervention-item:hover { border-left-color:#D4A017; }
+
+    @media (prefers-reduced-motion:reduce) {
+      .ticker-track { animation:none; }
+      #navbar { transition:none; }
+      .reveal { opacity:1; transform:none; transition:none; }
+    }
+    /* ── Membership wizard ── */
+    .step-circle.completed {
+      background: #1A4FBB !important;
+      color: #fff !important;
+    }
+    .step-circle.completed::after {
+      content: '✓';
+    }
+    .step-line.completed {
+      background: #1A4FBB !important;
+    }
+    .form-step {
+      animation: stepFadeIn 0.4s ease;
+    }
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateX(12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .form-input.invalid {
+      border-color: #f87171 !important;
+    }
+
+  </style>
+</head>
+
+<body class="bg-white text-aford-charcoal">
+
+  <!-- ══ 4 F's ANNOUNCEMENT BAR ══ -->
+  <div class="bg-aford-royal overflow-hidden" id="announcement-bar">
+    <div class="ticker-track py-2 select-none">
+      <div class="flex items-center gap-0">
+        <span class="font-heading text-xs tracking-widest text-blue-300 uppercase px-6 whitespace-nowrap" style="font-weight:700;">Our 4 F's</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Forex</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fertiliser</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fuel</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Food</span>
+        <span class="font-body text-xs text-blue-300 italic px-6 whitespace-nowrap">— The backbone of every Malawian life</span>
+        <span class="font-heading text-xs tracking-widest text-blue-300 uppercase px-6 whitespace-nowrap" style="font-weight:700;">Our 4 F's</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Forex</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fertiliser</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Fuel</span>
+        <span class="text-aford-gold font-heading text-base px-3">·</span>
+        <span class="font-heading text-sm text-white whitespace-nowrap px-1" style="font-weight:800;">Food</span>
+        <span class="font-body text-xs text-blue-300 italic px-6 whitespace-nowrap">— The backbone of every Malawian life</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav id="navbar" class="sticky top-0 z-50 bg-aford-navy" role="navigation" aria-label="Main navigation">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+
+        <a href="index.html" class="flex items-center gap-4 group" aria-label="AFORD home">
+          <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-aford-gold flex-shrink-0 group-hover:border-white transition-colors duration-200">
+            <img src="aford_logo.png" alt="AFORD logo" class="w-full h-full object-cover" />
+          </div>
+          <div class="leading-tight">
+            <p class="font-heading text-white text-xl tracking-wide leading-none" style="font-weight:800;">AFORD</p>
+            <p class="font-body text-blue-300 text-sm leading-none mt-1">Alliance for Democracy</p>
+          </div>
+        </a>
+
+        <div class="hidden xl:flex items-center gap-1">
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;">
+              About <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5"><p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">The Party</p></div>
+              <a href="about.html"        class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>About AFORD</a>
+              <a href="about.html#history"      class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party History</a>
+              <a href="about.html#leadership"   class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Leadership & Structure</a>
+              <a href="about.html#constitution" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party Constitution</a>
+            </div>
+          </div>
+
+          <!-- Policies — active on this page -->
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-aford-gold flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10" style="font-weight:700;">
+              Policies <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-[480px] bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 p-4">
+              <p class="font-heading text-xs tracking-widest text-aford-royal uppercase mb-2 px-1" style="font-weight:700;">The 4 F's — Our Core Agenda</p>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <a href="policy-forex.html"      class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150"><div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div><div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Forex</p><p class="font-body text-xs text-aford-slate leading-snug">Foreign exchange stability policy</p></div></a>
+                <a href="policy-fertiliser.html" class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150"><div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div><div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Fertiliser</p><p class="font-body text-xs text-aford-slate leading-snug">Agricultural input support policy</p></div></a>
+                <a href="policy-fuel.html"       class="flex items-start gap-3 p-3 rounded-lg hover:bg-aford-ice transition-colors duration-150"><div class="w-8 h-8 rounded-lg bg-aford-ice flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-aford-royal" style="font-weight:800;">F</span></div><div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Fuel</p><p class="font-body text-xs text-aford-slate leading-snug">Energy security & supply policy</p></div></a>
+                <a href="policy-food.html"       class="flex items-start gap-3 p-3 rounded-lg bg-aford-ice transition-colors duration-150"><div class="w-8 h-8 rounded-lg bg-aford-royal flex items-center justify-center flex-shrink-0"><span class="font-heading text-base text-white" style="font-weight:800;">F</span></div><div><p class="font-heading text-sm text-aford-navy" style="font-weight:700;">Food</p><p class="font-body text-xs text-aford-slate leading-snug">National food security policy</p></div></a>
+              </div>
+              <div class="border-t border-gray-100 pt-3 flex items-center justify-between">
+                <p class="font-body text-xs text-aford-slate">See the full picture</p>
+                <a href="manifesto.html" class="font-heading text-xs text-white bg-aford-royal rounded-lg px-3 py-1.5 hover:bg-aford-sky transition-colors duration-150" style="font-weight:700;">Read Full Manifesto →</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;">
+              News <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5"><p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">Stay Informed</p></div>
+              <a href="news.html"           class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Latest News</a>
+              <a href="press-releases.html" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Press Releases</a>
+              <a href="statements.html"     class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Party Statements</a>
+              <a href="events.html"         class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-gold flex-shrink-0"></span>Upcoming Events</a>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;">
+              Media <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+              <div class="px-4 pt-2 pb-1.5"><p class="font-heading text-xs tracking-widest text-aford-royal uppercase" style="font-weight:700;">Media Centre</p></div>
+              <a href="gallery.html"      class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Photo Gallery</a>
+              <a href="videos.html"       class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Videos</a>
+              <a href="media-center.html" class="flex items-center gap-2.5 px-4 py-2.5 font-body text-sm text-aford-charcoal hover:bg-aford-ice hover:text-aford-navy transition-colors duration-150"><span class="w-1.5 h-1.5 rounded-full bg-aford-royal flex-shrink-0"></span>Press Resources</a>
+            </div>
+          </div>
+
+          <a href="membership.html" class="font-heading text-sm text-aford-gold hover:text-white transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10 border border-aford-gold/40 hover:border-white/30" style="font-weight:700;">Membership</a>
+          <a href="index.html#contact" class="nav-link font-heading text-sm text-white hover:text-aford-gold transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white/10" style="font-weight:600;">Contact</a>
+        </div>
+
+        <div class="hidden xl:flex items-center">
+          <a href="membership.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-5 py-2.5 hover:brightness-110 transition-all duration-200 whitespace-nowrap" style="font-weight:700;">Join AFORD</a>
+        </div>
+
+        <button id="hamburger" class="xl:hidden flex flex-col justify-center items-center w-12 h-12 gap-1.5 rounded-lg hover:bg-white/10 transition-colors duration-200" aria-controls="mobile-menu" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span id="bar1" class="block w-5 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+          <span id="bar2" class="block w-5 h-0.5 bg-white transition-all duration-300"></span>
+          <span id="bar3" class="block w-5 h-0.5 bg-white transition-all duration-300 origin-center"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" role="region" aria-label="Mobile navigation">
+      <div class="bg-aford-navy border-t border-white/10 px-4 pb-6 pt-2 max-w-7xl mx-auto">
+        <div class="flex flex-col gap-1 mb-4">
+          <div>
+            <button id="mob-about-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              About <svg id="mob-about-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-about" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="about.html"              class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">About AFORD</a>
+              <a href="about.html#history"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party History</a>
+              <a href="about.html#leadership"   class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Leadership & Structure</a>
+              <a href="about.html#constitution" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party Constitution</a>
+            </div>
+          </div>
+          <div>
+            <button id="mob-policies-btn" class="w-full flex justify-between items-center font-heading text-sm text-aford-gold py-2.5 px-3 rounded-lg bg-white/10 transition-all duration-150" style="font-weight:700;" aria-expanded="true">
+              Policies <svg id="mob-policies-chev" class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-policies" class="pl-4 mt-1 flex flex-col gap-1">
+              <p class="font-heading text-xs tracking-widest text-blue-300 uppercase px-3 pt-1 pb-0.5" style="font-weight:700;">The 4 F's</p>
+              <a href="policy-forex.html"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Forex</a>
+              <a href="policy-fertiliser.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Fertiliser</a>
+              <a href="policy-fuel.html"       class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Fuel</a>
+              <a href="policy-food.html"       class="font-body text-sm text-aford-gold py-2 px-3 rounded-lg bg-white/10">Food ← You are here</a>
+              <div class="border-t border-white/10 my-1"></div>
+              <a href="manifesto.html"         class="font-body text-sm text-aford-gold py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Full Manifesto →</a>
+            </div>
+          </div>
+          <div>
+            <button id="mob-news-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              News <svg id="mob-news-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-news" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="news.html"           class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Latest News</a>
+              <a href="press-releases.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Press Releases</a>
+              <a href="statements.html"     class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Party Statements</a>
+              <a href="events.html"         class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Upcoming Events</a>
+            </div>
+          </div>
+          <div>
+            <button id="mob-media-btn" class="w-full flex justify-between items-center font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 transition-all duration-150" style="font-weight:600;" aria-expanded="false">
+              Media <svg id="mob-media-chev" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="mob-media" class="hidden pl-4 mt-1 flex flex-col gap-1">
+              <a href="gallery.html"      class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Photo Gallery</a>
+              <a href="videos.html"       class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Videos</a>
+              <a href="media-center.html" class="font-body text-sm text-blue-200 py-2 px-3 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-150">Press Resources</a>
+            </div>
+          </div>
+          <a href="membership.html"  class="font-heading text-sm text-aford-gold py-2.5 px-3 rounded-lg hover:bg-white/10 border border-aford-gold/30 transition-all duration-150" style="font-weight:700;">Membership</a>
+          <a href="index.html#contact" class="font-heading text-sm text-white py-2.5 px-3 rounded-lg hover:bg-white/10 hover:text-aford-gold transition-all duration-150" style="font-weight:600;">Contact</a>
+        </div>
+        <div class="pt-4 border-t border-white/10">
+          <a href="membership.html" class="font-heading text-sm text-center text-aford-gold-dk bg-aford-gold rounded-lg px-4 py-3 hover:brightness-110 transition-all duration-200 block" style="font-weight:700;">Join AFORD Today</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ══ PAGE HERO BANNER ══ -->
+  <div class="bg-aford-navy relative overflow-hidden">
+    <div class="absolute right-0 top-0 bottom-0 flex items-center pr-6 select-none pointer-events-none opacity-[0.04]" aria-hidden="true">
+      <svg width="380" height="380" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="0.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="absolute inset-0 opacity-10" style="background:radial-gradient(circle at 20% 50%, #1A4FBB 0%, transparent 60%)"></div>
+
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-12 pb-14 relative z-10">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 mb-6 flex-wrap" aria-label="Breadcrumb">
+        <a href="index.html" class="font-body text-sm text-blue-300 hover:text-white transition-colors duration-150">Home</a>
+        <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <span class="font-body text-sm text-aford-gold">Membership</span>
+      </nav>
+
+      <!-- Hero content -->
+      <div class="flex items-start gap-6">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-aford-gold flex items-center justify-center flex-shrink-0">
+          <svg class="w-9 h-9 sm:w-10 sm:h-10 text-aford-gold-dk" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <div>
+          <p class="font-heading text-xs tracking-widest text-aford-gold uppercase mb-2" style="font-weight:700;">Join the Movement</p>
+          <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-4" style="font-weight:900;">
+            Become a Member
+          </h1>
+          <p class="font-body text-lg text-blue-200 max-w-2xl leading-relaxed">
+            Membership in AFORD is free and open to every Malawian who believes in democratic governance, economic dignity, and the 4 F's agenda. Fill out the form below to register — it takes less than five minutes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ MAIN CONTENT — MEMBERSHIP WIZARD ══ -->
+  <main>
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+
+      <!-- ── Progress indicator ── -->
+      <div class="mb-12">
+        <div class="flex items-center justify-between mb-3" id="progress-steps">
+          <div class="step-indicator flex flex-col items-center flex-1" data-step="1">
+            <div class="step-circle w-10 h-10 rounded-full bg-aford-royal text-white flex items-center justify-center font-heading text-sm transition-all duration-300" style="font-weight:700;">1</div>
+            <span class="font-heading text-xs text-aford-navy mt-2 text-center" style="font-weight:600;">Personal</span>
+          </div>
+          <div class="step-line h-0.5 flex-1 bg-gray-200 mx-1 mt-[-20px]" data-line="1"></div>
+          <div class="step-indicator flex flex-col items-center flex-1" data-step="2">
+            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-aford-slate flex items-center justify-center font-heading text-sm transition-all duration-300" style="font-weight:700;">2</div>
+            <span class="font-heading text-xs text-aford-slate mt-2 text-center" style="font-weight:600;">Location</span>
+          </div>
+          <div class="step-line h-0.5 flex-1 bg-gray-200 mx-1 mt-[-20px]" data-line="2"></div>
+          <div class="step-indicator flex flex-col items-center flex-1" data-step="3">
+            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-aford-slate flex items-center justify-center font-heading text-sm transition-all duration-300" style="font-weight:700;">3</div>
+            <span class="font-heading text-xs text-aford-slate mt-2 text-center" style="font-weight:600;">Membership</span>
+          </div>
+          <div class="step-line h-0.5 flex-1 bg-gray-200 mx-1 mt-[-20px]" data-line="3"></div>
+          <div class="step-indicator flex flex-col items-center flex-1" data-step="4">
+            <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-aford-slate flex items-center justify-center font-heading text-sm transition-all duration-300" style="font-weight:700;">4</div>
+            <span class="font-heading text-xs text-aford-slate mt-2 text-center" style="font-weight:600;">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="membership-form" novalidate>
+
+        <!-- ═══════════ STEP 1: PERSONAL DETAILS ═══════════ -->
+        <div class="form-step" data-step-panel="1">
+          <div class="bg-aford-offwhite rounded-2xl p-7 sm:p-10">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-1 h-7 bg-aford-gold rounded-full"></div>
+              <h2 class="font-heading text-xl text-aford-navy" style="font-weight:800;">Personal Details</h2>
+            </div>
+
+            <div class="space-y-5">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Full Name <span class="text-red-500">*</span></label>
+                  <input type="text" name="full_name" required placeholder="e.g. Chisomo Banda"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your full name.</p>
+                </div>
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Date of Birth <span class="text-red-500">*</span></label>
+                  <input type="date" name="dob" required
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your date of birth.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Gender <span class="text-red-500">*</span></label>
+                  <select name="gender" required
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer">
+                    <option value="" disabled selected>Select gender</option>
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                  </select>
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please select your gender.</p>
+                </div>
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">National ID Number <span class="text-red-500">*</span></label>
+                  <input type="text" name="national_id" required placeholder="e.g. NM-1234567"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your National ID number.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Phone Number <span class="text-red-500">*</span></label>
+                  <input type="tel" name="phone" required placeholder="+265 999 000 000"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter a valid phone number.</p>
+                </div>
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Email Address <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                  <input type="email" name="email" placeholder="you@example.com"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter a valid email address.</p>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Physical Address <span class="text-red-500">*</span></label>
+                <input type="text" name="address" required placeholder="Village, Traditional Authority (T/A)"
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your physical address.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-6">
+            <button type="button" class="btn-next font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all duration-200 flex items-center gap-2" style="font-weight:700;">
+              Continue
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══════════ STEP 2: LOCATION ═══════════ -->
+        <div class="form-step hidden" data-step-panel="2">
+          <div class="bg-aford-offwhite rounded-2xl p-7 sm:p-10">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-1 h-7 bg-aford-gold rounded-full"></div>
+              <h2 class="font-heading text-xl text-aford-navy" style="font-weight:800;">Location</h2>
+            </div>
+            <p class="font-body text-sm text-aford-slate leading-relaxed mb-7 -mt-3">This helps AFORD connect you with your local branch and regional structure.</p>
+
+            <div class="space-y-5">
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Region <span class="text-red-500">*</span></label>
+                <select name="region" id="region-select" required
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer">
+                  <option value="" disabled selected>Select region</option>
+                  <option value="northern">Northern Region</option>
+                  <option value="central">Central Region</option>
+                  <option value="southern">Southern Region</option>
+                </select>
+                <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please select your region.</p>
+              </div>
+
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">District <span class="text-red-500">*</span></label>
+                <select name="district" id="district-select" required
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer">
+                  <option value="" disabled selected>Select region first</option>
+                </select>
+                <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please select your district.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Constituency <span class="text-red-500">*</span></label>
+                  <input type="text" name="constituency" required placeholder="e.g. Blantyre City Central"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                  <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your constituency.</p>
+                </div>
+                <div>
+                  <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Ward / Branch <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                  <input type="text" name="ward" placeholder="e.g. Chilomoni Ward"
+                    class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-6">
+            <button type="button" class="btn-back font-heading text-sm text-aford-navy bg-white border border-gray-200 rounded-xl px-7 py-3.5 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2" style="font-weight:600;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button type="button" class="btn-next font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all duration-200 flex items-center gap-2" style="font-weight:700;">
+              Continue
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══════════ STEP 3: MEMBERSHIP DETAILS ═══════════ -->
+        <div class="form-step hidden" data-step-panel="3">
+          <div class="bg-aford-offwhite rounded-2xl p-7 sm:p-10">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-1 h-7 bg-aford-gold rounded-full"></div>
+              <h2 class="font-heading text-xl text-aford-navy" style="font-weight:800;">Membership Details</h2>
+            </div>
+
+            <div class="space-y-5">
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Membership Type <span class="text-red-500">*</span></label>
+                <select name="membership_type" required
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 appearance-none cursor-pointer">
+                  <option value="" disabled selected>Select membership type</option>
+                  <option value="ordinary">Ordinary Member</option>
+                  <option value="youth">Youth Wing</option>
+                  <option value="women">Women's Wing</option>
+                  <option value="executive">Executive / Leadership Applicant</option>
+                </select>
+                <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please select a membership type.</p>
+              </div>
+
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Occupation <span class="text-red-500">*</span></label>
+                <input type="text" name="occupation" required placeholder="e.g. Farmer, Teacher, Trader, Student"
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+                <p class="field-error hidden font-body text-xs text-red-500 mt-1">Please enter your occupation.</p>
+              </div>
+
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Why do you want to join AFORD? <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                <textarea name="reason" rows="4" placeholder="Tell us what brings you to AFORD..."
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300 resize-none"></textarea>
+              </div>
+
+              <div>
+                <label class="block font-heading text-xs text-aford-navy uppercase tracking-wide mb-2" style="font-weight:700;">Referred By <span class="text-gray-400 font-body normal-case tracking-normal" style="font-weight:400;">(optional)</span></label>
+                <input type="text" name="referral" placeholder="Name of member who invited you, if any"
+                  class="form-input w-full font-body text-sm text-aford-charcoal bg-white border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-aford-royal focus:ring-2 focus:ring-aford-royal/20 transition-all duration-200 placeholder:text-gray-300" />
+              </div>
+
+              <div class="flex items-start gap-3 pt-2">
+                <input type="checkbox" name="consent" id="consent-checkbox" required
+                  class="mt-0.5 w-4 h-4 rounded border-gray-300 text-aford-royal focus:ring-aford-royal/30 flex-shrink-0 cursor-pointer" />
+                <label for="consent-checkbox" class="font-body text-sm text-aford-slate leading-relaxed cursor-pointer">
+                  I confirm that the information provided is accurate, and I consent to AFORD storing and using my data for membership administration purposes. <span class="text-red-500">*</span>
+                </label>
+              </div>
+              <p class="field-error-consent hidden font-body text-xs text-red-500">Please accept the consent statement to continue.</p>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-6">
+            <button type="button" class="btn-back font-heading text-sm text-aford-navy bg-white border border-gray-200 rounded-xl px-7 py-3.5 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2" style="font-weight:600;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button type="button" class="btn-next font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-xl px-7 py-3.5 hover:brightness-110 transition-all duration-200 flex items-center gap-2" style="font-weight:700;">
+              Review
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══════════ STEP 4: REVIEW & SUBMIT ═══════════ -->
+        <div class="form-step hidden" data-step-panel="4">
+          <div class="bg-aford-offwhite rounded-2xl p-7 sm:p-10">
+            <div class="flex items-center gap-3 mb-7">
+              <div class="w-1 h-7 bg-aford-gold rounded-full"></div>
+              <h2 class="font-heading text-xl text-aford-navy" style="font-weight:800;">Review Your Details</h2>
+            </div>
+            <p class="font-body text-sm text-aford-slate leading-relaxed mb-7 -mt-3">Please check that everything is correct before submitting your application.</p>
+
+            <div class="space-y-6" id="review-summary">
+
+              <div class="bg-white rounded-xl p-5 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="font-heading text-xs text-aford-royal uppercase tracking-wide" style="font-weight:700;">Personal Details</p>
+                  <button type="button" class="edit-step font-body text-xs text-aford-royal hover:underline" data-goto="1">Edit</button>
+                </div>
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                  <div><dt class="text-aford-slate inline">Full Name: </dt><dd class="text-aford-charcoal inline font-medium" data-review="full_name"></dd></div>
+                  <div><dt class="text-aford-slate inline">Date of Birth: </dt><dd class="text-aford-charcoal inline font-medium" data-review="dob"></dd></div>
+                  <div><dt class="text-aford-slate inline">Gender: </dt><dd class="text-aford-charcoal inline font-medium" data-review="gender"></dd></div>
+                  <div><dt class="text-aford-slate inline">National ID: </dt><dd class="text-aford-charcoal inline font-medium" data-review="national_id"></dd></div>
+                  <div><dt class="text-aford-slate inline">Phone: </dt><dd class="text-aford-charcoal inline font-medium" data-review="phone"></dd></div>
+                  <div><dt class="text-aford-slate inline">Email: </dt><dd class="text-aford-charcoal inline font-medium" data-review="email"></dd></div>
+                  <div class="sm:col-span-2"><dt class="text-aford-slate inline">Address: </dt><dd class="text-aford-charcoal inline font-medium" data-review="address"></dd></div>
+                </dl>
+              </div>
+
+              <div class="bg-white rounded-xl p-5 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="font-heading text-xs text-aford-royal uppercase tracking-wide" style="font-weight:700;">Location</p>
+                  <button type="button" class="edit-step font-body text-xs text-aford-royal hover:underline" data-goto="2">Edit</button>
+                </div>
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                  <div><dt class="text-aford-slate inline">Region: </dt><dd class="text-aford-charcoal inline font-medium" data-review="region"></dd></div>
+                  <div><dt class="text-aford-slate inline">District: </dt><dd class="text-aford-charcoal inline font-medium" data-review="district"></dd></div>
+                  <div><dt class="text-aford-slate inline">Constituency: </dt><dd class="text-aford-charcoal inline font-medium" data-review="constituency"></dd></div>
+                  <div><dt class="text-aford-slate inline">Ward/Branch: </dt><dd class="text-aford-charcoal inline font-medium" data-review="ward"></dd></div>
+                </dl>
+              </div>
+
+              <div class="bg-white rounded-xl p-5 border border-gray-100">
+                <div class="flex items-center justify-between mb-3">
+                  <p class="font-heading text-xs text-aford-royal uppercase tracking-wide" style="font-weight:700;">Membership</p>
+                  <button type="button" class="edit-step font-body text-xs text-aford-royal hover:underline" data-goto="3">Edit</button>
+                </div>
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+                  <div><dt class="text-aford-slate inline">Type: </dt><dd class="text-aford-charcoal inline font-medium" data-review="membership_type"></dd></div>
+                  <div><dt class="text-aford-slate inline">Occupation: </dt><dd class="text-aford-charcoal inline font-medium" data-review="occupation"></dd></div>
+                  <div><dt class="text-aford-slate inline">Referred By: </dt><dd class="text-aford-charcoal inline font-medium" data-review="referral"></dd></div>
+                </dl>
+              </div>
+
+            </div>
+
+            <!-- Submit success / error -->
+            <div id="submit-success" class="hidden mt-6 bg-green-50 border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <div>
+                <p class="font-heading text-sm text-green-800 mb-0.5" style="font-weight:700;">Welcome to AFORD!</p>
+                <p class="font-body text-sm text-green-700">Your membership application has been received. You will receive a confirmation by SMS or email shortly.</p>
+              </div>
+            </div>
+            <div id="submit-error" class="hidden mt-6 bg-red-50 border border-red-200 rounded-xl p-5 flex items-start gap-3">
+              <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <div>
+                <p class="font-heading text-sm text-red-800 mb-0.5" style="font-weight:700;">Something went wrong.</p>
+                <p class="font-body text-sm text-red-700">Please try again or contact us at <a href="mailto:info@aford.org.mw" class="underline">info@aford.org.mw</a>.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between mt-6">
+            <button type="button" class="btn-back font-heading text-sm text-aford-navy bg-white border border-gray-200 rounded-xl px-7 py-3.5 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2" style="font-weight:600;">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              Back
+            </button>
+            <button type="submit" id="submit-membership" class="font-heading text-sm text-white bg-aford-royal rounded-xl px-8 py-3.5 hover:bg-aford-sky transition-all duration-200 flex items-center gap-2" style="font-weight:700;">
+              <span id="submit-label">Submit Application</span>
+              <svg id="submit-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <svg id="submit-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- ══ REASSURANCE STRIP ══ -->
+  <div class="bg-aford-offwhite border-t border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+        <div class="flex items-start gap-4">
+          <div class="w-11 h-11 bg-aford-ice rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <p class="font-heading text-sm text-aford-navy mb-1" style="font-weight:700;">Your Data is Protected</p>
+            <p class="font-body text-xs text-aford-slate leading-relaxed">Your information is used only for membership administration and is never shared with third parties.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <div class="w-11 h-11 bg-aford-ice rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-9c-1.11 0-2.08.402-2.599 1"/></svg>
+          </div>
+          <div>
+            <p class="font-heading text-sm text-aford-navy mb-1" style="font-weight:700;">Membership is Free</p>
+            <p class="font-body text-xs text-aford-slate leading-relaxed">There is no fee to join AFORD. Membership is open to every eligible Malawian citizen.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <div class="w-11 h-11 bg-aford-ice rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-aford-royal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <div>
+            <p class="font-heading text-sm text-aford-navy mb-1" style="font-weight:700;">Quick Confirmation</p>
+            <p class="font-body text-xs text-aford-slate leading-relaxed">You'll receive confirmation of your membership status by SMS or email within a few working days.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ FOOTER (compact) ══ -->
+  <footer class="bg-aford-charcoal">
+    <div class="bg-aford-royal">
+      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="font-body text-sm text-blue-200 text-center sm:text-left">Want to know more about what AFORD stands for first?</p>
+        <a href="manifesto.html" class="font-heading text-sm text-aford-gold-dk bg-aford-gold rounded-lg px-6 py-2.5 hover:brightness-110 transition-all duration-200 whitespace-nowrap" style="font-weight:700;">Read Our Manifesto</a>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full overflow-hidden border border-aford-gold flex-shrink-0">
+          <img src="aford_logo.png" alt="AFORD" class="w-full h-full object-cover" />
+        </div>
+        <span class="font-heading text-sm text-white" style="font-weight:700;">AFORD — Alliance for Democracy</span>
+      </a>
+      <p class="font-body text-xs text-slate-500">&copy; <span id="footer-year"></span> Alliance for Democracy. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="privacy.html" class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">Privacy</a>
+        <a href="sitemap.html" class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">Sitemap</a>
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="font-body text-xs text-slate-500 hover:text-white transition-colors duration-150">↑ Top</button>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ══ JAVASCRIPT ══ -->
+  <script>
+    // ── Hamburger ─────────────────────────────
+    const hamburger  = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const bar1=document.getElementById('bar1'), bar2=document.getElementById('bar2'), bar3=document.getElementById('bar3');
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('open'); hamburger.setAttribute('aria-expanded','false');
+      bar1.style.transform=''; bar2.style.opacity='1'; bar3.style.transform='';
+    }
+    hamburger.addEventListener('click',()=>{
+      const isOpen=mobileMenu.classList.contains('open');
+      mobileMenu.classList.toggle('open'); hamburger.setAttribute('aria-expanded',String(!isOpen));
+      if(!isOpen){ bar1.style.transform='translateY(8px) rotate(45deg)'; bar2.style.opacity='0'; bar3.style.transform='translateY(-8px) rotate(-45deg)'; }
+      else { closeMobileMenu(); }
+    });
+    mobileMenu.querySelectorAll('a').forEach(l=>l.addEventListener('click',closeMobileMenu));
+    document.addEventListener('click',e=>{ if(!e.target.closest('#mobile-menu')&&!e.target.closest('#hamburger')) closeMobileMenu(); });
+
+    // ── Mobile accordions ─────────────────────
+    function makeAccordion(btnId,menuId,chevId){
+      const btn=document.getElementById(btnId),menu=document.getElementById(menuId),chev=document.getElementById(chevId);
+      if(!btn||!menu||!chev) return;
+      btn.addEventListener('click',()=>{
+        const open=!menu.classList.contains('hidden');
+        ['mob-about','mob-policies','mob-news','mob-media'].forEach(id=>{
+          if(id!==menuId){ document.getElementById(id)?.classList.add('hidden');
+            const c=document.getElementById(id+'-chev'),b=document.getElementById(id+'-btn');
+            if(c) c.style.transform=''; if(b) b.setAttribute('aria-expanded','false'); }
+        });
+        menu.classList.toggle('hidden',open); chev.style.transform=open?'':'rotate(180deg)';
+        btn.setAttribute('aria-expanded',String(!open));
+      });
+    }
+    makeAccordion('mob-about-btn','mob-about','mob-about-chev');
+    makeAccordion('mob-policies-btn','mob-policies','mob-policies-chev');
+    makeAccordion('mob-news-btn','mob-news','mob-news-chev');
+    makeAccordion('mob-media-btn','mob-media','mob-media-chev');
+
+    // ── Navbar scroll ─────────────────────────
+    const navbar=document.getElementById('navbar');
+    const annBar=document.getElementById('announcement-bar');
+    window.addEventListener('scroll',()=>{
+      navbar.classList.toggle('scrolled',window.scrollY>annBar.offsetHeight+10);
+    },{ passive:true });
+
+    // ── Scroll reveal ─────────────────────────
+    const revealEls=document.querySelectorAll('.reveal');
+    const ro=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); ro.unobserve(e.target); } });
+    },{ threshold:0.1 });
+    revealEls.forEach(el=>ro.observe(el));
+
+    // ── Sidebar active section ────────────────
+    const sections=document.querySelectorAll('section[id]');
+    const navLinks=document.querySelectorAll('.section-nav-link');
+    const so=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          navLinks.forEach(l=>l.classList.remove('active'));
+          const a=document.querySelector(`.section-nav-link[href="#${e.target.id}"]`);
+          if(a) a.classList.add('active');
+        }
+      });
+    },{ rootMargin:'-30% 0px -60% 0px' });
+    sections.forEach(s=>so.observe(s));
+
+    // ── Footer year ───────────────────────────
+    document.getElementById('footer-year').textContent=new Date().getFullYear();
+
+    // ══════════════════════════════════════════
+    // MEMBERSHIP WIZARD LOGIC
+    // ══════════════════════════════════════════
+    const TOTAL_STEPS = 4;
+    let currentStep = 1;
+
+    const form = document.getElementById('membership-form');
+    const steps = document.querySelectorAll('.form-step');
+    const stepCircles = document.querySelectorAll('.step-circle');
+    const stepLines = document.querySelectorAll('.step-line');
+
+    // District data by region
+    const districtsByRegion = {
+      northern: ['Chitipa', 'Karonga', 'Likoma', 'Mzimba', 'Nkhata Bay', 'Rumphi'],
+      central: ['Dedza', 'Dowa', 'Kasungu', 'Lilongwe', 'Mchinji', 'Nkhotakota', 'Ntcheu', 'Ntchisi', 'Salima'],
+      southern: ['Balaka', 'Blantyre', 'Chikwawa', 'Chiradzulu', 'Machinga', 'Mangochi', 'Mulanje', 'Mwanza', 'Neno', 'Nsanje', 'Thyolo', 'Phalombe', 'Zomba']
+    };
+
+    const regionSelect = document.getElementById('region-select');
+    const districtSelect = document.getElementById('district-select');
+
+    regionSelect.addEventListener('change', () => {
+      const region = regionSelect.value;
+      districtSelect.innerHTML = '<option value="" disabled selected>Select district</option>';
+      if (districtsByRegion[region]) {
+        districtsByRegion[region].forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          districtSelect.appendChild(opt);
+        });
+      }
+    });
+
+    function showStep(stepNum) {
+      steps.forEach(s => s.classList.add('hidden'));
+      document.querySelector(`[data-step-panel="${stepNum}"]`).classList.remove('hidden');
+
+      stepCircles.forEach((circle, idx) => {
+        const stepIndex = idx + 1;
+        circle.classList.remove('completed');
+        if (stepIndex < stepNum) {
+          circle.classList.add('completed');
+          circle.textContent = '';
+        } else if (stepIndex === stepNum) {
+          circle.style.background = '#1A4FBB';
+          circle.style.color = '#fff';
+          circle.textContent = stepIndex;
+        } else {
+          circle.style.background = '#E5E7EB';
+          circle.style.color = '#4A4A5A';
+          circle.textContent = stepIndex;
+        }
+      });
+
+      stepLines.forEach((line, idx) => {
+        const lineIndex = idx + 1;
+        line.classList.toggle('completed', lineIndex < stepNum);
+      });
+
+      if (stepNum === 4) populateReview();
+
+      window.scrollTo({ top: document.getElementById('progress-steps').offsetTop - 120, behavior: 'smooth' });
+      currentStep = stepNum;
+    }
+
+    function validateStep(stepNum) {
+      const panel = document.querySelector(`[data-step-panel="${stepNum}"]`);
+      const requiredFields = panel.querySelectorAll('[required]');
+      let valid = true;
+
+      requiredFields.forEach(field => {
+        const errEl = field.closest('div')?.querySelector('.field-error');
+        let fieldValid = true;
+
+        if (field.type === 'checkbox') {
+          fieldValid = field.checked;
+          const consentErr = panel.querySelector('.field-error-consent');
+          if (consentErr) consentErr.classList.toggle('hidden', fieldValid);
+        } else {
+          fieldValid = field.value.trim() !== '';
+          if (field.type === 'email' && field.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value)) {
+            fieldValid = false;
+          }
+          if (errEl) errEl.classList.toggle('hidden', fieldValid);
+        }
+
+        field.classList.toggle('invalid', !fieldValid);
+        if (!fieldValid) valid = false;
+      });
+
+      return valid;
+    }
+
+    // Next buttons
+    document.querySelectorAll('.btn-next').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (validateStep(currentStep)) {
+          showStep(currentStep + 1);
+        } else {
+          document.querySelector(`[data-step-panel="${currentStep}"] .invalid`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
+
+    // Back buttons
+    document.querySelectorAll('.btn-back').forEach(btn => {
+      btn.addEventListener('click', () => showStep(currentStep - 1));
+    });
+
+    // Edit links on review step
+    document.querySelectorAll('.edit-step').forEach(btn => {
+      btn.addEventListener('click', () => showStep(Number(btn.dataset.goto)));
+    });
+
+    // Populate review summary
+    function populateReview() {
+      const formData = new FormData(form);
+      const labelMaps = {
+        gender: { female: 'Female', male: 'Male', other: 'Other', prefer_not_to_say: 'Prefer not to say' },
+        region: { northern: 'Northern Region', central: 'Central Region', southern: 'Southern Region' },
+        membership_type: { ordinary: 'Ordinary Member', youth: 'Youth Wing', women: "Women's Wing", executive: 'Executive / Leadership Applicant' }
+      };
+
+      document.querySelectorAll('[data-review]').forEach(el => {
+        const key = el.dataset.review;
+        let value = formData.get(key) || '—';
+        if (labelMaps[key] && labelMaps[key][value]) value = labelMaps[key][value];
+        el.textContent = value;
+      });
+    }
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!validateStep(3)) { showStep(3); return; }
+
+      const submitBtn = document.getElementById('submit-membership');
+      const submitLabel = document.getElementById('submit-label');
+      const submitIcon = document.getElementById('submit-icon');
+      const submitSpinner = document.getElementById('submit-spinner');
+      const successEl = document.getElementById('submit-success');
+      const errorEl = document.getElementById('submit-error');
+
+      successEl.classList.add('hidden');
+      errorEl.classList.add('hidden');
+      submitLabel.textContent = 'Submitting…';
+      submitIcon.classList.add('hidden');
+      submitSpinner.classList.remove('hidden');
+      submitBtn.disabled = true;
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+      payload.consent = !!document.getElementById('consent-checkbox').checked;
+
+      try {
+        // Wire to your FastAPI endpoint: POST /api/membership
+        const res = await fetch('/api/membership', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          successEl.classList.remove('hidden');
+          form.reset();
+          document.querySelector('button[type="submit"]').closest('.flex').classList.add('hidden');
+          successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          throw new Error();
+        }
+      } catch {
+        errorEl.classList.remove('hidden');
+        errorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } finally {
+        submitLabel.textContent = 'Submit Application';
+        submitIcon.classList.remove('hidden');
+        submitSpinner.classList.add('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Initialize
+    showStep(1);
+  </script>
+
+</body>
+</html>
